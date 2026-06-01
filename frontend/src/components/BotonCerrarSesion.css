@@ -1,0 +1,17 @@
+.pp-logout-header {
+    background: #eaf5ff !important;
+    border: 1px solid #cfe8ff !important;
+    color: #2563eb !important;
+    border-radius: 999px !important;
+    padding: 9px 16px !important;
+    font-size: 13px !important;
+    font-weight: 800 !important;
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.08) !important;
+    transition: all 0.2s ease !important;
+  }
+  
+  .pp-logout-header:hover {
+    background: #dbeafe !important;
+    border-color: #93c5fd !important;
+    color: #1d4ed8 !important;
+  }

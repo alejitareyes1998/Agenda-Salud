@@ -1,0 +1,8 @@
+/* Botón principal reutilizable del sistema */
+.btn-principal {
+  background: linear-gradient(to right, #e1bee7 0%, #f3e5f5 100%);
+  border: none;
+  color: #455a64;
+  font-weight: bold;
+}
+
