@@ -1,50 +1,27 @@
-.fondo-pagina-cita {
-  min-height: 100vh;
+.cita-panel-wrapper {
   width: 100%;
-  background-image: linear-gradient(
-      rgba(15, 23, 42, 0.35),
-      rgba(15, 23, 42, 0.35)
-    ),
-    url("/imagenes/fondo.jpg");
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 24px;
 }
 
 .tarjeta-cita {
   width: 100%;
-  max-width: 420px;
+  max-width: 380px;
+  margin: 0 auto;
   padding: 36px 32px;
   border-radius: 24px;
 
-  background: rgba(255, 255, 255, 0.88);
-  backdrop-filter: blur(14px);
+  background: #ffffff;
 
-  box-shadow: 0 20px 45px rgba(15, 23, 42, 0.25);
+  box-shadow: 0 20px 45px rgba(15, 23, 42, 0.18);
   text-align: center;
-}
-
-.logo-cita {
-  width: 105px;
-  margin-bottom: 18px;
-}
-
-.titulo-cita {
-  margin: 0 0 24px;
-  font-size: 28px;
-  font-weight: 800;
-  color: #1e293b;
 }
 
 .tarjeta-cita form {
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 18px;
 }
 
 .input-cita {
@@ -81,8 +58,8 @@
   border-radius: 12px;
   cursor: pointer;
 
-  background: linear-gradient(135deg, #67e8b9, #5eead4);
-  color: #0f172a;
+  background: linear-gradient(135deg, #60a5fa, #2563eb);
+  color: #ffffff;
 
   font-size: 16px;
   font-weight: 700;
@@ -115,13 +92,5 @@
   .tarjeta-cita {
     padding: 30px 22px;
     border-radius: 20px;
-  }
-
-  .titulo-cita {
-    font-size: 24px;
-  }
-
-  .logo-cita {
-    width: 90px;
   }
 }
