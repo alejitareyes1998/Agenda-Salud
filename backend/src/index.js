@@ -3,7 +3,7 @@ const cors = require('cors');
 const morgan = require('morgan');
 require('dotenv').config();
 const app = express();
-// 1. Middlewares (para que el servidor enteinda JSON)
+// 1. Middlewares (para que el servidor entienda JSON)
  app.use(cors()); // Permite conexiones externas (FRONTEND)
  app.use(express.json()); // Permite procesar datos en formato JSON
  app.use(morgan('dev')); //Registro de peticiones en consola

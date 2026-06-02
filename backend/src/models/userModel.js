@@ -36,6 +36,24 @@ const User = {
             throw error;
         }
     },
+    
+        // Actualizar contraseña usando el código de recuperación
+    cambiarContrasenaPorCodigo: async (codigo, nuevaContrasena) => {
+        try {
+            const sql = `
+                UPDATE usuario
+                SET password = ?, codigo_recuperacion = NULL
+                WHERE codigo_recuperacion = ?
+            `;
+
+            const [result] = await db.execute(sql, [nuevaContrasena, codigo]);
+            return result;
+
+        } catch (error) {
+            console.error('Error en cambiarContrasenaPorCodigo:', error.message);
+            throw error;
+        }
+    },
 
 // Crear un usuario (para el registro)
 create: async (userData) => {

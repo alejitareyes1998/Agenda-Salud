@@ -1,17 +1,16 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom'; //Sirve para cambiar de pagina desde codigo
+import  { useState, useRef } from 'react';
+import { useNavigate, Link } from 'react-router-dom'; //Sirve para cambiar de pagina desde codigo
 import { InputText } from 'primereact/inputtext';
 import { Password } from 'primereact/password';
 import { Button } from 'primereact/button';
 import { Card } from 'primereact/card';
+import { Toast } from 'primereact/toast';
 import BotonAyuda from '../../components/BotonAyuda';
-
-
 import  axios  from 'axios';
-
 const Login = () => {
     const navigate = useNavigate(); //Prepara la funcion para enviar al usuario de Login a otra pagina
     // 1. Estados para guardar lo que el usuario escribe
+    const toast = useRef(null);
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const handleLogin = async (e) => {
@@ -34,22 +33,40 @@ const Login = () => {
                 localStorage.setItem('nombre_usuario', datosUnificados.nombre);
                 localStorage.setItem('tipo_usuario', datosUnificados.tipo_usuario);
                 // Mensaje de ingreso exitoso
-                alert("Conexion exitosa: Bienvenido.");
-                navigate('/inicio');
-           }
-        }
-
-        catch (error) {
+                    toast.current.show({
+                        severity: 'success',
+                        position: 'top-center',
+                        summary: 'Bienvenido',
+                        detail: 'inicio de sesion',
+                        life: 4000
+                    });
+                    setTimeout(() => {
+                    navigate('/inicio');
+                }, 4000);
+            }
+         } catch (error) {
             console.log("Error completo:", error.response?.data || error.message);
-                alert("Error de conexion. Revisa el correo y la contraseña que esten en la base de datos.");
+                toast.current.show({
+                severity: 'error',
+                summary: 'Acceso Denegado',
+                detail: 'Correo o Contraseña incorrectos.',
+                life: 4000,
+                icon: <i className='pi pi-times-circle' style={{ color: '#0b3dc6' }}></i>,
+                closeIcon: <i className='pi pi-times' style={{ color: '#0b3dc6' }}></i>,
+                style: {
+                    backgroundColor: 'rgba(255, 255, 255, 0.85', //Blanco Transparente
+                    backdropFilter: 'blur(4px)',                //Efecto borroso
+                    color: '#58b7e2',                        //Texto morado
+                    borderLeft: '6px solid #3a73ed'          //Barra lateral
+                }
+                
+            });
+                
           }
-        };
-    
-
+    };
     return (
         //Usamos PrimeFlex para centrar todo en la pantalla
-        <div className= 'flex align-items-center justify-content-center'
-        style={{
+        <div className= 'flex align-items-center justify-content-center' style={{
             backgroundImage: "url('/imagenes/fondo.jpg')",
             backgroundSize: 'cover',
             backgroundPosition: 'center',
@@ -60,45 +77,40 @@ const Login = () => {
             top: 0,
             left: 0
         }}>
-            <Card className='shadow-8' style={{ width: '22rem', borderRadius: '15px', backgroundColor: 'rgba(255, 255, 255, 0.92)' }}>
-                <div className='flex flex-column align-items-center mb-4'>
-                    <img src='/imagenes/logo.png' alt='Logo Agenda Salud' style={{ width: '150px' }} />
-                    <h2 className='text-900 font-bold mt-3 mb-0'>BIENVENIDOS</h2>
-                    <p className='text-600 font-mediun'>Agenda Salud</p>
+            {/*Bienvenida Flotante */}
+            <Toast ref={toast} position="top-center" />
+            {/* Contenedor Principal*/ }
+            <Card className='shadow-8 p-0' style={{ width: '18rem', height: '500px', borderRadius: '15px', backgroundColor: 'rgba(255, 255, 255, 0.92)' }}>
+                <div className='flex flex-column align-items-center mt-0 pt-0 mb-1'>
+                    <img src='/imagenes/logo.png' alt='Logo Agenda Salud' style={{ width: '100px' }} />
+                    <h2 className='text-900 font-bold mt- mb-0' style={{ fontSize: '1.4rem' }}>BIENVENIDOS</h2>
                 </div>
 
-        <form onSubmit={handleLogin} className='flex flex-column gap-3'>
-            <div className='flex flex-column gap-2'>
-                <label htmlFor='email' className='text-sm font-bold'>Correo Electronico</label>
-                    <InputText
-                    id='email'
-                    value={email}
+        <form onSubmit={handleLogin} className='flex flex-column gap-1.5' style={{ padding: '0 15px' }}>
+            <div className='flex flex-column gap-1'>
+                <label htmlFor='email' className='font-semibold text-base text-800 text-sm'>Correo Electronico</label>
+                    <InputText id='email' type='email' value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    placeholder='usuario@correo.com'
-                    className='w-full p-inputtext-sm'
-                />
-            </div>
+                    className='w-full p-2'
+                    required />
+                </div>
             
-            <div className='flex flex-column gap-2'>
-                <label htmlFor='password'title='Contraseña' className='text-sm font-bold'> Contraseña</label>
+            <div className='flex flex-column gap-1 mb-3'>
+                <label htmlFor='password'title='Contraseña' className='font-semibold text-base text-800 text-sm'> Contraseña</label>
                     <Password id='password' value={password} onChange={(e) => setPassword(e.target.value)}
-                    toggleMask feedback={false}
-                    className='w-full'
-                    inputClassName='w-full p-inputtext-sm'
-                    placeholder='Contraseña'
-                />
+                    feedback={false}
+                    toggleMask 
+                    style={{ width: '100%', height: '39px' }}
+                    inputStyle={{ width: '100%', height: '100%' }}
+                    required />
             </div>
 
-
-
-            <div className='flex flex-column gap-2 mt-2'>
-            
-            <Button
+             <Button
                 label='Ingresar'
-                onClick={handleLogin} 
-                className='w-full'
+                type='submit'
+                className='w-full p-2 font-bold'
                 style={{
-                    background: 'linear-gradient(to right, #89cff0 0%, #b3e5fc 100%)',
+                    background: 'linear-gradient(to right, #99d4ef 0%, #b3e5fc 100%)',
                     border: ' none',
                     color: '#455a64',
                     fontWeight: 'bold'
@@ -109,32 +121,29 @@ const Login = () => {
                 type="button"
                 label='Registrarse' 
                 onClick={() => navigate('/registro')} //Ruta de navegacion para pasar al registro
-                className='w-full mt-2'
+                className='w-full p-2 font-bold'
                 style={{
-                    background: ' linear-gradient(to right, #e1bee7 0%, #f3e5f5 100%)',
+                    background: ' linear-gradient(to right, #ddb0f0 0%, #d1ade5 100%)',
                     border: 'none',
                     color: '#455a64',
                     fontWeight: 'bold'
                 }}
             />
-
-            </div>
-            <div className='text-center mt-2'>
+         </form>
+            
+            <div className='flex justify-content-center mt-3 text-sm'>
             {/* Link para ir a la página de recuperar contraseña */}
-            {/* Link para ir a la página de recuperar contraseña */}
-                <span
-                    onClick={() => navigate('/recuperar-contrasena')}
-                    className='text-xs no-underline text-primary font-bold cursor-pointer'
-                >
-                    ¿Olvidaste tu contraseña?
-                </span>
+                <Link
+                   to='/recuperar-contrasena'
+                    className='text-primary cursor-pointer'
+                    > 
+                    ¿Olvidaste tu contrasena?
+                </Link>
             </div>
-        </form>
-    </Card>
-
-    <BotonAyuda />
+          </Card>
+       <BotonAyuda />
     </div>
-);
+    );
 };
 
 export default Login;

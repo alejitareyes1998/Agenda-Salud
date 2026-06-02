@@ -30,8 +30,8 @@ import axios from 'axios';
     
         // Si el backend responde correctamente, mostramos mensaje de éxito
         if (respuesta.status === 200) {
-            alert('Su correo a sid confirmado. Se ha enviado un código de recuperación a tu correo');
             alert('Su correo a sido confirmado. Se ha enviado un código de recuperación a tu correo');
+            localStorage.setItem('correoUsuario', correo);
             navigate('/validar-codigo');
         }
         
@@ -63,11 +63,13 @@ import axios from 'axios';
 
 {/* Tarjeta principal del formulario */}
     <Card
-        className='shadow-8'
+        className='shadow'
         style={{
-            width: '22rem',
+            width: '18rem',
+            height: '500x',
             borderRadius: '15px',
-            backgroundColor: 'rgba(255, 255, 255, 0.92)'
+            backgroundColor: 'rgba(255, 255, 255, 0.92)',
+            padding: '10px 0px 5px 0px'
         }}
     >
 {/* Contenedor del logo y textos */}
@@ -76,14 +78,14 @@ import axios from 'axios';
                 <img
                     src='/imagenes/logo.png'
                     alt='Logo Agenda Salud'
-                    style={{ width: '150px' }}
+                    style={{ width: '100px' }}
                 />
 
-                <h2 className='text-900 font-bold mt-3 mb-0'>
+                <h2 className='text-xl fond-bold text-900 mt-2 mb0 text-center'>
                     Recuperar Contraseña
                 </h2>
 
-                <p className='text-600 font-medium text-center'>
+                <p className='text-600 font-medium text-center mt-0 mb-2'>
                     Ingresa tu correo
                 </p>
 
@@ -103,15 +105,23 @@ import axios from 'axios';
                     id='correo'
                     value={correo}
                     onChange={(e) => setCorreo(e.target.value)}
-                    placeholder='prueba@ejemplo.com'
-                    className='w-full p-inputtext-sm'
+                    placeholder=''
+                    className='w-full'
+                    required
                 />
             </div>
 
         <Button
         type='submit'
         label='Recuperar'
-        className='w-full mt-2 btn-principal p-button-sm'
+        className='w-full mt-2'
+        style={{
+            backgroundColor: '#7cc3f3',
+            borderColor: '#5dade2',
+            transition: 'filter 0.2s'
+        }}
+       onMouseEnter={(e) => e.currentTarget.style.filter = 'brightness(0.85)'}
+       onMouseLeave={(e) => e.currentTarget.style.filter = 'brightness(1)'}
         />
 
         </form>
@@ -122,6 +132,13 @@ import axios from 'axios';
             label='Volver al Login'
             onClick={() => navigate('/login')}
             className='w-full mt-2 btn-principal p-button-sm'
+            style={{ 
+                backgroundColor: '#7cc3f3',
+                 borderColor: '#5dade2',
+                 transition: 'filter 0.2s'
+                 }}
+               onMouseEnter={(e) => e.currentTarget.style.filter = 'brightness(0.85)'}
+               onMouseLeave={(e) => e.currentTarget.style.filter = 'brightness(1)'}  
         />
 
             </div>

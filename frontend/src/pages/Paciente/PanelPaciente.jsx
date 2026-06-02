@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import BotonCerrarSesion from '../../components/BotonCerrarSesion';
 import { Link } from 'react-router-dom';
-import './Inicio.css';
+
 
 
 

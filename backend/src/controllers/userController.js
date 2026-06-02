@@ -6,7 +6,7 @@ const { enviarCodigoRecuperacion } = require('../utils/emailServices');
 // 1. Login / Buscar por email
 loginUser = async (req, res) => {
     try {
-        const { correo, password: contrasena } = req.body;
+        const { correo, password: Contrasena } = req.body;
         const user = await User.findByEmail(correo);
         if (!correo) {
             return res.status(404).json({ mensaje: "El correo es obligatorio" });
@@ -14,8 +14,8 @@ loginUser = async (req, res) => {
         if (!user || user.length === 0) {
             return res.status(404).json({ mensaje: "Usuario no encontrado" });
         }
-        const usuarioReal = user;
-        const passwordCorrecto = await bcrypt.compare(contrasena, usuarioReal.password);
+        const usuarioReal = user [0];
+        const passwordCorrecto = await bcrypt.compare(Contrasena, usuarioReal.Contrasena);
         if (!passwordCorrecto) {
             return res.status(401).json({ mensaje: "Contraseña incorrecta"});
         }
@@ -50,7 +50,7 @@ recuperarContrasena = async (req, res) => {
         const user = await User.findByEmail(correo);
 
         // Si no existe ningún usuario con ese correo
-        if (user.length === 0) {
+        if (!user) {
             return res.status(404).json({ mensaje: "El correo no está registrado" });
         }
 
@@ -105,7 +105,7 @@ recuperarContrasena = async (req, res) => {
         dataUsuario.password = await bcrypt.hash(dataUsuario.password, salt);
         // Guardamos en la base de datos
         const id = await User.create(dataUsuario);
-        res.status(201).json({ mensaje: "Usuario creado con exito", id_usuario: id});
+        res.status(201).json({ mensaje: "Continuar registro", id_usuario: id});
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: "Error al crear el usuario" });
@@ -194,8 +194,8 @@ cambiarContrasena = async (req, res) => {
         }
 
         // Actualizamos la contraseña usando el código
-        await User.cambiarContrasenaPorCodigo(codigo, nuevaContrasena);
-
+        const contrasenaEncriptada = await bcrypt.hash(nuevaContrasena, 10);
+        await User.cambiarContrasenaPorCodigo(codigo, contrasenaEncriptada);
         // Respondemos éxito
         return res.status(200).json({
             mensaje: "Contraseña actualizada correctamente"

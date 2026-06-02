@@ -72,7 +72,8 @@ const handleValidarCodigo = async (e) => {
     <Card
         className='shadow-8'
         style={{
-            width: '22rem',
+            width: '18rem',
+            height: '500px',
             borderRadius: '15px',
             backgroundColor: 'rgba(255, 255, 255, 0.92)'
         }}

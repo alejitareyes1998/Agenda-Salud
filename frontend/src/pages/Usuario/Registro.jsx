@@ -90,7 +90,7 @@ if (password !== confirmarPassword) {
       });
     
       console.log("Respuesta del backend:", respuesta.data);
-      alert("Registro Exitoso");
+      alert("Continuar registro");
       if (tipoUsuario === 'paciente') {
         navigate('/registro-paciente', { state: { usuarioId: respuesta.data.id_usuario } });
       } else if (tipoUsuario === 'medico') {

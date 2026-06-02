@@ -33,7 +33,7 @@ const RegistroPaciente = () => {
         try {
             const res = await axios.post('http://localhost:3000/api/paciente', datos);
             if (res.status === 200 || res.status === 201) {
-                alert("¡REGISTRO EXITOSO EN LA BASE DE DATOS!");
+                alert("Paciente Registrado Exitosamente");
                 navigate('/login');
             }
         } catch ( error) {
