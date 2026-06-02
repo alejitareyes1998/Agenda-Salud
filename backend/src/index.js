@@ -3,7 +3,7 @@ const cors = require('cors');
 const morgan = require('morgan');
 require('dotenv').config();
 const app = express();
-// 1. Middlewares (para que el servidor entienda JSON)
+// 1. Middlewares (para que el servidor enteinda JSON)
  app.use(cors()); // Permite conexiones externas (FRONTEND)
  app.use(express.json()); // Permite procesar datos en formato JSON
  app.use(morgan('dev')); //Registro de peticiones en consola
@@ -27,7 +27,7 @@ const app = express();
  const PORT = process.env.PORT || 3000;
  app.listen(PORT,() => {
    console.log('===================================================');
-   console.log(`SERVIDOR MEDICO FUNCIONANDO EN: http://localthost:${PORT}`);
+   console.log(`SERVIDOR MEDICO FUNCIONANDO EN: http://localhost:${PORT}`);
    console.log('Base de Datos vinculada y rutas listas.');
    console.log('=========================================================');
  });

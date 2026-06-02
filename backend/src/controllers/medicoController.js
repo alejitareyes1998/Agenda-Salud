@@ -30,8 +30,8 @@ exports.getMedicoById = async (req, res) => {
     try {
         const { id } = req.params;
         const result = await Medico.obtenerPorId(id);
-        if (result.length > 0) {
-            res.status(200).json(result[0]);
+        if (result) {
+            res.status(200).json(result);
         } else {
             res.status(404).json({ mensaje: 'Medico no encontrado' });
         }
@@ -39,6 +39,21 @@ exports.getMedicoById = async (req, res) => {
         res.status(500).json({ error: error.message});
     }
 };
+
+exports.getMedicoByUsuarioId = async (req, res) => {
+    try {
+        const { id_usuario } = req.params;
+        const result = await Medico.obtenerPorUsuarioConUsuario(id_usuario);
+        if (result) {
+            res.status(200).json(result);
+        } else {
+            res.status(404).json({ mensaje: 'Medico no encontrado para este usuario' });
+        }
+    } catch (error) {
+        res.status(500).json({ error: error.message});
+    }
+};
+
     // Actualizar un medico
 exports.updateMedico = async (req, res) => {
     try {

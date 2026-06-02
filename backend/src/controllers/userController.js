@@ -1,26 +1,52 @@
 const bcrypt = require('bcryptjs');
 const User = require('../models/userModel');
-const jwt = require('jsonwebtoken');
 const { enviarCodigoRecuperacion } = require('../utils/emailServices');
+const jwt = require('jsonwebtoken');
 
-// 1. Login / Buscar por email
 loginUser = async (req, res) => {
     try {
-        const { correo, password: Contrasena } = req.body;
-        const user = await User.findByEmail(correo);
-        if (!correo) {
-            return res.status(404).json({ mensaje: "El correo es obligatorio" });
+        const { correo, password: contrasena } = req.body;
+
+        if (!correo || !contrasena) {
+            return res.status(400).json({ mensaje: "Correo y contraseña son obligatorios" });
         }
+
+        const user = await User.findByEmail(correo);
         if (!user || user.length === 0) {
             return res.status(404).json({ mensaje: "Usuario no encontrado" });
         }
-        const usuarioReal = user [0];
-        const passwordCorrecto = await bcrypt.compare(Contrasena, usuarioReal.Contrasena);
+
+        const usuarioReal = Array.isArray(user) ? user[0] : user;
+
+        if (!usuarioReal) {
+            return res.status(404).json({ mensaje: "Usuario no encontrado" });
+        }
+
+        const passwordGuardado = String(usuarioReal.password || '');
+        const esHashSeguro = /^\$2[aby]\$\d{2}\$/.test(passwordGuardado);
+
+        let passwordCorrecto = false;
+
+        if (esHashSeguro) {
+            passwordCorrecto = await bcrypt.compare(contrasena, passwordGuardado);
+        } else {
+            passwordCorrecto = passwordGuardado === contrasena;
+
+            if (passwordCorrecto) {
+                const salt = await bcrypt.genSalt(10);
+                const passwordHasheado = await bcrypt.hash(contrasena, salt);
+                const idUsuario = usuarioReal.id_usuario ?? usuarioReal.id;
+                await User.updatePassword(idUsuario, passwordHasheado);
+            }
+        }
+
         if (!passwordCorrecto) {
             return res.status(401).json({ mensaje: "Contraseña incorrecta"});
         }
+
+        const idUsuario = usuarioReal.id_usuario ?? usuarioReal.id;
         const token = jwt.sign(
-           {id: usuarioReal.id, tipo_usuario: usuarioReal.tipo_usuario },
+           {id: idUsuario, tipo_usuario: usuarioReal.tipo_usuario },
            'mi_clave_secreta_del_sena_123',
            { expiresIn: '2h' }
         );
@@ -50,12 +76,6 @@ recuperarContrasena = async (req, res) => {
         const user = await User.findByEmail(correo);
 
         // Si no existe ningún usuario con ese correo
-        if (!user) {
-            return res.status(404).json({ mensaje: "El correo no está registrado" });
-        }
-
-
-    // Si el correo existe, generamos un código aleatorio de 6 dígitos
         if (!user) {
             return res.status(404).json({ mensaje: "El correo no está registrado" });
         }
@@ -105,7 +125,7 @@ recuperarContrasena = async (req, res) => {
         dataUsuario.password = await bcrypt.hash(dataUsuario.password, salt);
         // Guardamos en la base de datos
         const id = await User.create(dataUsuario);
-        res.status(201).json({ mensaje: "Continuar registro", id_usuario: id});
+        res.status(201).json({ mensaje: "Usuario creado con exito", id_usuario: id});
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: "Error al crear el usuario" });
@@ -193,9 +213,12 @@ cambiarContrasena = async (req, res) => {
             });
         }
 
+        const salt = await bcrypt.genSalt(10);
+        const nuevaContrasenaHasheada = await bcrypt.hash(nuevaContrasena, salt);
+
         // Actualizamos la contraseña usando el código
-        const contrasenaEncriptada = await bcrypt.hash(nuevaContrasena, 10);
-        await User.cambiarContrasenaPorCodigo(codigo, contrasenaEncriptada);
+        await User.cambiarContrasenaPorCodigo(codigo, nuevaContrasenaHasheada);
+
         // Respondemos éxito
         return res.status(200).json({
             mensaje: "Contraseña actualizada correctamente"

@@ -90,7 +90,7 @@ if (password !== confirmarPassword) {
       });
     
       console.log("Respuesta del backend:", respuesta.data);
-      alert("Continuar registro");
+      alert("Registro Exitoso");
       if (tipoUsuario === 'paciente') {
         navigate('/registro-paciente', { state: { usuarioId: respuesta.data.id_usuario } });
       } else if (tipoUsuario === 'medico') {
@@ -137,10 +137,10 @@ if (password !== confirmarPassword) {
         style={{ width: '150px' }} // Aumento tamaño del Logo
       />
 
-      <h2 className="text-900 font-bold mt-3 mb-0">REGISTRO</h2>
+      <h2 className="text-900 font-bold mt-3 mb-0">Registrarse</h2>
 
       <p className="text-600 font-medium">
-        Complete el formulario para registrarse
+        Ingrese sus datos personales
       </p>
     </div>
 

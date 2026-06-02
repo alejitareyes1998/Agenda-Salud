@@ -1,6 +1,6 @@
 const express = require('express');
-const router = express.Router()
-const userController = require('../controllers/userController')
+const router = express.Router();
+const userController = require('../controllers/userController');
 // definimos que cuando alguien entre a "/usuarios", use la funcion de tu controlador
 router.get('/', userController.getAllUser);
 //Ruta para crear un nuevo usuario
@@ -9,7 +9,7 @@ router.post('/', userController.createUser);
 router.post('/login', userController.loginUser);
 //Ruta para recuperar contraseña
 router.post('/recuperar-contrasena', userController.recuperarContrasena);
-//Ruta para validar codigo de recuperacion
+//Ruta para validar el código de recuperación
 router.post('/validar-codigo', userController.validarCodigoRecuperacion);
 //Ruta para cambiar contraseña
 router.put('/cambiar-contrasena', userController.cambiarContrasena);

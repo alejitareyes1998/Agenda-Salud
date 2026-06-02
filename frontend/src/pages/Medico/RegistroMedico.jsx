@@ -55,16 +55,16 @@ const RegistroMedico = () => {
     
 return (
     <div className="fondo-pagina-medico">
-        <div className="tarjeta-registro-medico"> 
-        
+        <div className="tarjeta-registro-medico">
+
            <img src="/imagenes/logo.png" alt="Logo Agenda de Salud"
               className="logo-agenda-salud" />
-            <h2 className="text-center mb-1"
-            style={{ color: '#1a2530',
-            fontWeight: 'bold',
-            fontSize: '24px' }}>Agenda Salud</h2>
+            
+            <h2 className="h2">
+                Ingrese sus datos
+            </h2>
             <p className="text-center text-xs text-gray500 mb4"
-            style={{ marginTop: '0px' }}>Acreditacion Medica</p>
+            style={{ marginTop: '5px' }}>Acreditacion Medica</p>
             <form onSubmit={handleGuardarMedico} 
             className="p-fluid">
             

@@ -36,8 +36,19 @@ const User = {
             throw error;
         }
     },
-    
-        // Actualizar contraseña usando el código de recuperación
+
+    // Actualizar contraseña en el perfil del usuario
+    updatePassword: async (idUsuario, nuevaContrasena) => {
+        try {
+            const [result] = await db.execute('UPDATE usuario SET password = ? WHERE id_usuario = ?', [nuevaContrasena, idUsuario]);
+            return result;
+        } catch (error) {
+            console.error('Error en updatePassword:', error.message);
+            throw error;
+        }
+    },
+
+    // Actualizar contraseña usando el código de recuperación
     cambiarContrasenaPorCodigo: async (codigo, nuevaContrasena) => {
         try {
             const sql = `

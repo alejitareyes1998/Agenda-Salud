@@ -37,7 +37,7 @@ return (
             style={{ width: "120px" }}
         />
 
-        <h2 className="text-900 font-bold mt-3 mb-0">AYUDA USUARIO</h2>
+        <h2 className="text-900 font-bold mt-3 mb-0">¿Necesitas Ayuda?</h2>
 
         <p className="text-600 font-medium text-center">
             Información básica para el uso de Agenda Salud.
@@ -115,8 +115,8 @@ return (
 
     <Button
         type="button"
-        label="Volver al login"
-        onClick={() => navigate("/login")}
+        label="Volver"
+        onClick={() => navigate(-1)}
         className="w-full mt-4"
     />
 

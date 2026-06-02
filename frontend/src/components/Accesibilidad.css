@@ -1,18 +1,23 @@
-/* PANEL */
+/* ========================= */
+/* PANEL DE ACCESIBILIDAD */
+/* ========================= */
+
 .panel-accesibilidad {
     display: flex;
     flex-direction: column;
     gap: 8px;
     padding: 10px;
+    min-width: 165px;
 }
 
-/* BOTONES */
 .panel-accesibilidad button {
-    width: 140px;
+    width: 100%;
+    min-width: 150px;
     height: 38px;
     display: flex;
     align-items: center;
-    gap: 10px;
+    justify-content: flex-start;
+    gap: 8px;
     border: none;
     border-radius: 8px;
     background: #0056b3;
@@ -20,16 +25,211 @@
     padding: 0 12px;
     font-size: 15px;
     cursor: pointer;
+    white-space: nowrap;
     transition: background 0.2s ease;
 }
 
-/* HOVER */
 .panel-accesibilidad button:hover {
     background: #003d82;
 }
 
-/* TEXTO siempre visible */
 .panel-accesibilidad .texto {
     font-size: 13px;
     white-space: nowrap;
+}
+
+
+/* ========================= */
+/* CONTRASTE GLOBAL */
+/* ========================= */
+
+/* Variables y esquema para modo de alto contraste */
+body.contraste-activo {
+    --acc-bg: #000000;
+    --acc-text: #ffffff;
+    --acc-accent: #FFD54F; /* amarillo accesible, usado por muchas aplicaciones */
+    --acc-muted: #d1d5db;
+    --acc-button-bg: var(--acc-accent);
+    --acc-button-color: #000000;
+
+    background: var(--acc-bg) !important;
+    color: var(--acc-text) !important;
+}
+
+
+
+
+/* ========================= */
+/* TEXTOS */
+/* ========================= */
+
+body.contraste-activo h1,
+body.contraste-activo h2,
+body.contraste-activo h3,
+body.contraste-activo h4,
+body.contraste-activo h5,
+body.contraste-activo h6,
+body.contraste-activo p,
+body.contraste-activo span,
+body.contraste-activo label,
+body.contraste-activo small {
+    color: var(--acc-text) !important;
+}
+
+
+
+/* ========================= */
+/* BOTONES */
+/* ========================= */
+
+body.contraste-activo button,
+body.contraste-activo .p-button {
+    background: var(--acc-button-bg) !important;
+    color: var(--acc-button-color) !important;
+    border: 2px solid var(--acc-text) !important;
+    box-shadow: none !important;
+    font-weight: 800 !important;
+}
+
+body.contraste-activo button:hover,
+body.contraste-activo .p-button:hover {
+    background: var(--acc-text) !important;
+    color: var(--acc-button-color) !important;
+    border-color: var(--acc-accent) !important;
+}
+
+body.contraste-activo button:hover *,
+body.contraste-activo .p-button:hover * {
+    color: var(--acc-button-color) !important;
+}
+
+
+/* ========================= */
+/* INPUTS, SELECTS Y TEXTAREAS */
+/* ========================= */
+
+body.contraste-activo input,
+body.contraste-activo textarea,
+body.contraste-activo select,
+body.contraste-activo .p-inputtext {
+    background: var(--acc-bg) !important;
+    color: var(--acc-text) !important;
+    border: 2px solid var(--acc-text) !important;
+}
+
+body.contraste-activo input::placeholder,
+body.contraste-activo textarea::placeholder,
+body.contraste-activo .p-inputtext::placeholder {
+    color: var(--acc-muted) !important;
+}
+
+body.contraste-activo input:focus,
+body.contraste-activo textarea:focus,
+body.contraste-activo select:focus,
+body.contraste-activo .p-inputtext:enabled:focus {
+    border-color: var(--acc-accent) !important;
+    box-shadow: 0 0 0 4px rgba(255, 213, 79, 0.25) !important;
+    outline: none !important;
+}
+
+
+/* ========================= */
+/* ENLACES E ICONOS */
+/* ========================= */
+
+body.contraste-activo a {
+    color: var(--acc-accent) !important;
+    text-decoration: underline !important;
+}
+
+body.contraste-activo a:hover {
+    color: var(--acc-text) !important;
+}
+
+body.contraste-activo i,
+body.contraste-activo svg {
+    color: var(--acc-accent) !important;
+    fill: currentColor !important;
+}
+
+
+/* ========================= */
+/* CASOS ESPECIALES */
+/* ========================= */
+
+body.contraste-activo .login-page,
+body.contraste-activo .panel-paciente,
+body.contraste-activo .fondo-pagina-cita {
+    background-image: none !important;
+    background: #000000 !important;
+    background-color: #000000 !important;
+}
+
+body.contraste-activo .login-card {
+    background: #111827 !important;
+    color: #ffffff !important;
+    border: 2px solid #ffffff !important;
+    box-shadow: none !important;
+}
+
+body.contraste-activo .pp-avatar {
+    background: var(--acc-accent) !important;
+    color: var(--acc-button-color) !important;
+}
+
+
+/* ========================= */
+/* PANEL DE ACCESIBILIDAD EN CONTRASTE */
+/* ========================= */
+
+body.contraste-activo .panel-accesibilidad {
+    background-color: #000000 !important;
+    border: 2px solid #ffffff !important;
+}
+
+
+/* ========================= */
+/* TAMAÑOS DE LETRA GLOBALES */
+/* ========================= */
+
+/* Aumentar/disminuir aplicando clases al elemento <body> desde el componente */
+body.letra-grande {
+    font-size: 115% !important;
+    line-height: 1.6 !important;
+}
+
+body.letra-extra-grande {
+    font-size: 130% !important;
+    line-height: 1.75 !important;
+}
+
+/* Para mejorar la legibilidad en modo contraste */
+body.contraste-activo, body.letra-grande, body.letra-extra-grande {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* Enfocar elementos claramente cuando esté activo el modo contraste */
+body.contraste-activo a:focus,
+body.contraste-activo button:focus,
+body.contraste-activo input:focus,
+body.contraste-activo textarea:focus,
+body.contraste-activo select:focus {
+    outline: 3px solid var(--acc-accent) !important;
+    outline-offset: 2px !important;
+}
+
+/* Mejorar el espaciado y áreas clicables en modo accesible */
+body.contraste-activo button,
+body.contraste-activo .p-button,
+body.contraste-activo .panel-accesibilidad button {
+    padding: 12px 16px !important;
+}
+
+/* Reducir animaciones si el usuario las desactiva (prefers-reduced-motion) */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        transition: none !important;
+        animation: none !important;
+    }
 }

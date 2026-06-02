@@ -32,16 +32,13 @@ const handleValidarCodigo = async (e) => {
     
         // Si el backend responde correctamente
         if (respuesta.status === 200) {
-            alert('Código validado correctamente.');
-        
-    
             // Guardamos temporalmente el código validado
             localStorage.setItem('codigoRecuperacion', codigo);
         
             alert('Código validado correctamente.');
         
             // Enviamos al usuario a cambiar contraseña
-            navigate('/cambiar-contrasena');
+            navigate('/cambio-contrasena');
         }
     } catch (error) {
         // Mostramos el error en consola para revisar detalles
@@ -72,8 +69,7 @@ const handleValidarCodigo = async (e) => {
     <Card
         className='shadow-8'
         style={{
-            width: '18rem',
-            height: '500px',
+            width: '22rem',
             borderRadius: '15px',
             backgroundColor: 'rgba(255, 255, 255, 0.92)'
         }}
