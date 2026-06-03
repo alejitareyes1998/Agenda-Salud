@@ -53,3 +53,13 @@ exports.getAllCitas = async (req, res) => {
                 res.status(500).json({ error: err.message });
     }
 };
+// 5. Obtener citas de un paciente específico
+exports.getCitasByPaciente = async (req, res) => {
+    try {
+        const { id } = req.params; // Captura el ID de la URL (ej: el 55)
+        const results = await Cita.findByPaciente(id); // Llama a la función que acabamos de crear en el modelo
+        res.status(200).json(results);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+};
