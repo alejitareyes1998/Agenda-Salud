@@ -1,9 +1,14 @@
 const express = require('express');
 const router = express.Router();
 const medicoController = require('../controllers/medicoController');
+const protegerRuta = require('../middlewares/authMiddleware');
+
 // Rutas para la entidad medicos
-router.get('/', medicoController.getAllMedicos);
 router.post('/', medicoController.createMedico);
+// Guardian
+router.use(protegerRuta);
+router.get('/', medicoController.getAllMedicos);
+
 router.get('/usuario/:id_usuario', medicoController.getMedicoByUsuarioId);
 router.get('/:id', medicoController.getMedicoById);
 router.put('/:id', medicoController.updateMedico);

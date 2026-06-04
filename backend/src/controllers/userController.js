@@ -37,6 +37,19 @@ loginUser = async (req, res) => {
                 const passwordHasheado = await bcrypt.hash(contrasena, salt);
                 const idUsuario = usuarioReal.id_usuario ?? usuarioReal.id;
                 await User.updatePassword(idUsuario, passwordHasheado);
+                const token = jwt.sign(
+                    { id_usuario: idUsuario, tipo_ususario: usuarioReal.tipo_usuario },
+                    'clave_secreta_de_emergencia',
+                    {  expiresIn: '2h' }
+                );
+                return res.json({
+                    token: token,
+                    idusuario: idusuario,
+                    usuario: {
+                        tipo_usuario: usuarioReal.tipo_usuario,
+                        nombre: usuarioReal.nombre || 'Usuario'
+                    }
+                });
             }
         }
 
