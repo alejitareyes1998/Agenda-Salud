@@ -6,6 +6,7 @@ const protegerRuta = require('../middlewares/authMiddleware');
 router.use(protegerRuta);
 router.get('/', citaController.getAllCitas);
 router.post('/', citaController.createCita);
+router.get('/paciente/:id', citaController.getCitasByPaciente);
 router.put('/:id', citaController.updateCita);
 router.delete('/:id', citaController.deleteCita);
 module.exports = router;

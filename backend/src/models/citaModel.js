@@ -46,7 +46,24 @@ const Cita = {
         } catch (error) {
             throw error;
         }
+    },
+    // para obtener solo las citas de un paciente específico en su historial
+    findByPaciente: async (id_paciente) => {
+        const sql = `
+            SELECT
+                c.id_cita, c.fecha, c.hora, c.estado, c.motivo,
+                CONCAT(um.nombre, ' ', um.apellido) AS nombre_medico
+            FROM cita c
+            INNER JOIN medico m ON c.id_medico = m.id_medico
+            INNER JOIN usuario um ON m.id_usuario = um.id_usuario
+            WHERE c.id_paciente = ?
+            ORDER BY c.fecha DESC, c.hora DESC`;
+        try {
+            const [rows] = await db.execute(sql, [id_paciente]);
+            return rows;
+        } catch (error) {
+            throw error;
+        }
     }
 };
 module.exports = Cita;
-    
