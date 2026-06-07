@@ -1,8 +1,42 @@
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import PanelLayout from "../../layouts/PanelLayout";
+import apiConfig from "../../api/apiConfig";
 
 export default function PanelPaciente() {
   const navigate = useNavigate();
+  const [paciente, setPaciente] = useState(null);
+
+  useEffect(() => {
+    const cargarPaciente = async () => {
+      const idUsuario = localStorage.getItem("id_usuario");
+
+      if (!idUsuario) {
+        return;
+      }
+
+      try {
+        const respuesta = await apiConfig.get(`/paciente/usuario/${idUsuario}`);
+
+        const datosPaciente = respuesta.data?.paciente || respuesta.data;
+
+        setPaciente(datosPaciente);
+
+        if (datosPaciente?.id_paciente) {
+          localStorage.setItem(
+            "id_paciente",
+            String(datosPaciente.id_paciente)
+          );
+        }
+      } catch (error) {
+        console.error("Error al cargar datos del paciente:", error);
+      }
+    };
+
+    cargarPaciente();
+  }, []);
+
+  const nombre = paciente?.nombre || "Paciente";
 
   const irAgendarCita = () => {
     navigate("/agendar-cita");
@@ -28,7 +62,7 @@ export default function PanelPaciente() {
     >
       <section className="pp-greeting">
         <div>
-          <h1>Buenos días</h1>
+          <h1>Bienvenido {nombre}</h1>
           <p>¿Qué deseas hacer hoy?</p>
         </div>
       </section>

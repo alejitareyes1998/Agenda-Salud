@@ -75,7 +75,7 @@ import axios from 'axios';
                 <img
                     src='/imagenes/logo.png'
                     alt='Logo Agenda Salud'
-                    style={{ width: '150px' }}
+                    style={{ width: '100px' }}
                 />
 
                 <h2 className='text-900 font-bold mt-3 mb-0'>
@@ -125,7 +125,7 @@ import axios from 'axios';
 
             </div>
     </Card>
-    <BotonAyuda />
+   
 </div>
     );
 };

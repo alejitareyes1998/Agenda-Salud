@@ -194,13 +194,13 @@ body.contraste-activo .panel-accesibilidad {
 
 /* Aumentar/disminuir aplicando clases al elemento <body> desde el componente */
 body.letra-grande {
-    font-size: 115% !important;
+    font-size: 150% !important;
     line-height: 1.6 !important;
 }
 
 body.letra-extra-grande {
-    font-size: 130% !important;
-    line-height: 1.75 !important;
+    font-size: 200% !important;
+    line-height: 1.6 !important;
 }
 
 /* Para mejorar la legibilidad en modo contraste */

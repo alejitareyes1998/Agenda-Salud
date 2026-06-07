@@ -10,14 +10,11 @@ const BotonAyuda = () => {
       label="¿Necesitas ayuda?"
       onClick={() => navigate("/ayuda")}
       style={{
-        position: "fixed",
-        bottom: "20px",
-        right: "20px",
         background: "rgba(255, 255, 255, 0.9)",
         border: "none",
         color: "#455a64",
         fontWeight: "bold",
-        zIndex: 1000
+        marginLeft: "auto" // 👈 ESTA ES LA CLAVE
       }}
     />
   );

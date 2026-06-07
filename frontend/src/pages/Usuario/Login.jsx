@@ -68,7 +68,7 @@ const Login = () => {
         }}>
             <Card className='shadow-8' style={{ width: '22rem', borderRadius: '15px', backgroundColor: 'rgba(255, 255, 255, 0.92)' }}>
                 <div className='flex flex-column align-items-center mb-4'>
-                    <img src='/imagenes/logo.png' alt='Logo Agenda Salud' style={{ width: '150px' }} />
+                    <img src='/imagenes/logo.png' alt='Logo Agenda Salud' style={{ width: '100px' }} />
                     <h2 className='text-900 font-bold mt-3 mb-0'>Bienvenido</h2>
                     <p className='text-600 font-mediun'>Agenda Salud</p>
                 </div>

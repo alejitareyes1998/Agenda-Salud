@@ -134,7 +134,7 @@ if (password !== confirmarPassword) {
       <img
         src="/imagenes/logo.png"
         alt="Logo Agenda Salud"
-        style={{ width: '150px' }} // Aumento tamaño del Logo
+        style={{ width: '100px' }} // Aumento tamaño del Logo
       />
 
       <h2 className="text-900 font-bold mt-3 mb-0">Registrarse</h2>
@@ -292,7 +292,7 @@ if (password !== confirmarPassword) {
 
       </Card>
 
-      <BotonAyuda />
+  
 
     </div>
   );

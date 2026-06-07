@@ -17,8 +17,7 @@ import TusPacientes from './pages/Medico/TusPacientes';
 
 
 import Accesibilidad from './components/Accesibilidad';
-import BotonAyuda from './components/BotonAyuda';
-import BotonAtras from './components/BotonAtras';
+
 import ValidarCodigo from './pages/Usuario/ValidarCodigo';
 import CambioContrasena from './pages/Usuario/CambioContrasena';
 import RegistroPaciente from './pages/Paciente/RegistroPaciente';
@@ -33,8 +32,7 @@ const AdminPanel = () => <div className='p-5'><h1>Panel de Administracion</h1><p
 function App() {
   return (
     <Router>
-      <BotonAyuda />
-      <BotonAtras />
+   
       <Accesibilidad />
       <Routes>
         {/* RUTA 1: El inicio. Todo el que llegue entra por el Login */}

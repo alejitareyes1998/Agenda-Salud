@@ -31,13 +31,13 @@ export default function PanelMedico() {
     cargarMedico();
   }, []);
 
-  const nombreCompleto = medico
-    ? `${medico.nombre || ""} ${medico.apellido || ""}`.trim()
+  const nombre = medico
+    ? `${medico.nombre || ""} `.trim()
     : "Doctor";
 
   const especialidad = medico?.nombre_especialidad || "Especialidad";
   const tarjetaProfesional = medico?.tarjeta_profesional || "";
-  const experiencia = medico?.experiencia_clinica || "No disponible";
+ 
 
   return (
     <PanelLayout
@@ -47,7 +47,7 @@ export default function PanelMedico() {
     >
       <section className="pp-greeting">
         <div>
-          <h1>Buenos días, {nombreCompleto}</h1>
+          <h1>Bienvenido Dr. {nombre}</h1>
 
           <p>
             {especialidad} ·{" "}
@@ -56,7 +56,6 @@ export default function PanelMedico() {
               : "Actualiza tus datos"}
           </p>
 
-          <p>Experiencia: {experiencia}</p>
         </div>
       </section>
 
