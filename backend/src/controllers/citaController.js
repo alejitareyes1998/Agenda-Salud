@@ -74,7 +74,7 @@ const getCitasByPaciente = async (req, res) => {
     }
 };
 
-// 6. NUEVO: Obtener la disponibilidad de horarios en bloques de 20 min
+// 6. CORREGIDO: Obtener la disponibilidad procesando todos los turnos del día (Mañana y Tarde)
 const obtenerDisponibilidad = async (req, res) => {
     const { id_medico, fecha } = req.query;
     const DURACION_CITA = 20; 
@@ -101,8 +101,6 @@ const obtenerDisponibilidad = async (req, res) => {
             return res.json([]); // Si no trabaja (ej: Domingo), devuelve vacío
         }
 
-        const { hora_inicio, hora_fin } = horariosTrabajo[0];
-
         // Consultar las citas ocupadas activas
         const queryCitas = `
             SELECT hora 
@@ -113,25 +111,31 @@ const obtenerDisponibilidad = async (req, res) => {
         
         const horasOcupadasSet = new Set(citasOcupadas.map(c => c.hora.substring(0, 5)));
         const intervalosDisponibles = [];
-        
-        const [hInicio, mInicio] = hora_inicio.split(':').map(Number);
-        const [hFin, mFin] = hora_fin.split(':').map(Number);
-        
-        let minutosActuales = (hInicio * 60) + mInicio;
-        const minutosFinales = (hFin * 60) + mFin;
 
-        // Generar los bloques de tiempo
-        while (minutosActuales + DURACION_CITA <= minutosFinales) {
-            const horas = Math.floor(minutosActuales / 60).toString().padStart(2, '0');
-            const minutos = (minutosActuales % 60).toString().padStart(2, '0');
-            const horaFormato = `${horas}:${minutos}`; 
+        // NUEVO: Iteramos sobre cada fila de horario encontrada (Mañana, Tarde, etc.)
+        for (const bloque of horariosTrabajo) {
+            const [hInicio, mInicio] = bloque.hora_inicio.split(':').map(Number);
+            const [hFin, mFin] = bloque.hora_fin.split(':').map(Number);
+            
+            let minutosActuales = (hInicio * 60) + mInicio;
+            const minutosFinales = (hFin * 60) + mFin;
 
-            if (!horasOcupadasSet.has(horaFormato)) {
-                intervalosDisponibles.push({ hora: horaFormato });
+            // Generar los bloques de tiempo para el rango actual
+            while (minutosActuales + DURACION_CITA <= minutosFinales) {
+                const horas = Math.floor(minutosActuales / 60).toString().padStart(2, '0');
+                const minutos = (minutosActuales % 60).toString().padStart(2, '0');
+                const horaFormato = `${horas}:${minutos}`; 
+
+                if (!horasOcupadasSet.has(horaFormato)) {
+                    intervalosDisponibles.push({ hora: horaFormato });
+                }
+
+                minutosActuales += DURACION_CITA;
             }
-
-            minutosActuales += DURACION_CITA;
         }
+
+        // Ordenar los intervalos de manera cronológica por si se mezclan turnos
+        intervalosDisponibles.sort((a, b) => a.hora.localeCompare(b.hora));
 
         return res.json(intervalosDisponibles);
 
