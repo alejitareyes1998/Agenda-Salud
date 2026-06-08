@@ -19,8 +19,13 @@ export default function HistorialCitasPac() {
     id_medico: ""
   });
 
+  // NUEVOS ESTADOS para el control de horas de 20 min en el Reagendamiento
+  const [horasDisponibles, setHorasDisponibles] = useState([]);
+  const [buscandoHoras, setBuscandoHoras] = useState(false);
+  const [mensajeHoras, setMensajeHoras] = useState("");
+
   // El ID es completamente dinámico según la sesión
-  const idPaciente = localStorage.getItem("id_paciente") || "1"; // OJO: El "1" es solo un fallback para pruebas, en producción siempre debería venir del localStorage
+  const idPaciente = localStorage.getItem("id_paciente") || "1"; 
 
   // Cargar datos reales desde la Base de Datos mediante apiConfig
   useEffect(() => {
@@ -50,6 +55,44 @@ export default function HistorialCitasPac() {
     obtenerDatos();
   }, [idPaciente]);
 
+  // DETECTOR INTELIGENTE PARA EL MODAL: Busca horarios disponibles al cambiar médico o fecha en la edición
+  useEffect(() => {
+    const cargarHorariosEdicion = async () => {
+      // Si no hay médico o fecha seleccionada en el modal, limpiamos las horas
+      if (!datosEditar.id_medico || !datosEditar.fecha) {
+        setHorasDisponibles([]);
+        setMensajeHoras("");
+        return;
+      }
+
+      setBuscandoHoras(true);
+      setMensajeHoras("");
+      setHorasDisponibles([]);
+      
+      try {
+        const respuesta = await apiConfig.get("/cita/disponibilidad", {
+          params: {
+            id_medico: datosEditar.id_medico,
+            fecha: datosEditar.fecha,
+          },
+        });
+
+        setHorasDisponibles(respuesta.data);
+
+        if (respuesta.data.length === 0) {
+          setMensajeHoras("El médico no atiende este día o no cuenta con horarios disponibles.");
+        }
+      } catch (error) {
+        console.error("Error al cargar disponibilidad en modal:", error);
+        setMensajeHoras("No se pudieron cargar los horarios para esta fecha.");
+      } finally {
+        setBuscandoHoras(false);
+      }
+    };
+
+    cargarHorariosEdicion();
+  }, [datosEditar.id_medico, datosEditar.fecha]); // Activo para cambios dentro del modal
+
   // DELETE: Eliminar la cita médica en la BD
   const handleEliminar = async (idCita) => {
     const confirmar = window.confirm("¿Está seguro de que desea cancelar permanentemente esta cita médica?");
@@ -70,7 +113,6 @@ export default function HistorialCitasPac() {
   const abrirModalModificar = (cita) => {
     setCitaEditando(cita.id_cita);
 
-    // Buscamos el ID numérico del médico comparando el nombre de la cita con nuestra lista de médicos
     const medicoEncontrado = medicos.find(m => 
       cita.nombre_medico && m.nombre.toLowerCase().includes(cita.nombre_medico.split(' ')[0].toLowerCase())
     );
@@ -79,7 +121,6 @@ export default function HistorialCitasPac() {
       fecha: cita.fecha ? cita.fecha.substring(0, 10) : "",
       hora: cita.hora,
       motivo: cita.motivo,
-      // Si encontramos el ID lo ponemos, si no, usamos el id_medico que tenga o vacío
       id_medico: medicoEncontrado ? medicoEncontrado.id_medico : (cita.id_medico || "")
     });
   };
@@ -93,11 +134,17 @@ export default function HistorialCitasPac() {
 
   const handleGuardarModificacion = async (e) => {
     e.preventDefault();
+    
+    // Validación de seguridad para obligar a seleccionar una hora de la cuadrícula
+    if (!datosEditar.hora) {
+      alert("Por favor, seleccione un horario disponible de la lista.");
+      return;
+    }
+
     try {
       await apiConfig.put(`/cita/${citaEditando}`, datosEditar);
       alert("¡Cita reprogramada correctamente!");
       
-      // Buscamos el médico seleccionado para parchar los datos visuales de inmediato
       const medicoSeleccionado = medicos.find(m => String(m.id_medico) === String(datosEditar.id_medico));
       
       setCitas(citas.map(cita => 
@@ -105,7 +152,6 @@ export default function HistorialCitasPac() {
           ? { 
               ...cita, 
               ...datosEditar,
-              // Le inyectamos los nombres correctos al estado local temporal
               nombre_medico: medicoSeleccionado ? medicoSeleccionado.nombre : cita.nombre_medico 
             } 
           : cita
@@ -122,9 +168,7 @@ export default function HistorialCitasPac() {
   const obtenerNombreMedico = (cita) => {
     if (!cita) return "Médico Especialista";
 
-    // 1. Si el backend ya nos da el nombre completo (Como vimos en la consola)
     if (cita.nombre_medico) {
-      // Intentamos buscar si ese médico tiene una especialidad en nuestra lista local para agregarla
       const medLocal = medicos.find(m => m.nombre.toLowerCase().includes(cita.nombre_medico.split(' ')[0].toLowerCase()));
       if (medLocal) {
         return `${cita.nombre_medico} (${medLocal.especialidad})`;
@@ -132,7 +176,6 @@ export default function HistorialCitasPac() {
       return cita.nombre_medico;
     }
 
-    // 2. Respaldo por ID si el usuario está justo en el momento posterior a reagendar
     if (cita.id_medico) {
       const med = medicos.find(m => String(m.id_medico) === String(cita.id_medico));
       if (med) return `${med.nombre} (${med.especialidad})`;
@@ -143,17 +186,17 @@ export default function HistorialCitasPac() {
 
   // Función para formatear la fecha en formato humano ejemplo "23 de junio de 2026"
   const formatearFechaHumana = (fechaString) => {
-  if (!fechaString) return "";
-  const fechaLimpia = fechaString.substring(0, 10); // '2026-06-23'
-  const [anio, mes, dia] = fechaLimpia.split('-');
-  
-  const meses = [
-    "enero", "febrero", "marzo", "abril", "mayo", "junio",
-    "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"
-  ];
-  
-  return `${parseInt(dia)} de ${meses[parseInt(mes) - 1]}, ${anio}`;
-};
+    if (!fechaString) return "";
+    const fechaLimpia = fechaString.substring(0, 10); 
+    const [anio, mes, dia] = fechaLimpia.split('-');
+    
+    const meses = [
+      "enero", "febrero", "marzo", "abril", "mayo", "junio",
+      "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"
+    ];
+    
+    return `${parseInt(dia)} de ${meses[parseInt(mes) - 1]}, ${anio}`;
+  };
 
   return (
     <PanelLayout
@@ -191,14 +234,14 @@ export default function HistorialCitasPac() {
                   </div>
 
                   <h3 className="pp-nav-title" style={{ fontSize: '17px', margin: '0 0 4px 0' }}>
-                   {obtenerNombreMedico(cita)} {/* <-- Asegúrate de que diga 'cita' y no 'cita.id_medico' */}
+                   {obtenerNombreMedico(cita)}
                   </h3>
                   
                   <p className="pp-nav-desc" style={{ fontSize: '14px', marginBottom: '4px' }}>
                     <strong>Fecha:</strong> {formatearFechaHumana(cita.fecha)}
                   </p>
                   <p className="pp-nav-desc" style={{ fontSize: '14px', marginBottom: '4px' }}>
-                    <strong>Hora:</strong> {cita.hora} hs
+                    <strong>Hora:</strong> {cita.hora.substring(0, 5)} hs
                   </p>
                   <p className="pp-nav-desc" style={{ fontSize: '14px', marginBottom: '16px', fontStyle: 'italic' }}>
                     "{cita.motivo}"
@@ -236,38 +279,77 @@ export default function HistorialCitasPac() {
 
         </div>
 
-        {/* OVERLAY DEL MODAL PARA REAGENDAR */}
+        {/* OVERLAY DEL MODAL PARA REAGENDAR (ACTUALIZADO CON BLOQUES DE 20 MIN) */}
         {citaEditando && (
           <div style={{
             position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
             backgroundColor: 'rgba(15, 23, 42, 0.6)', backdropFilter: 'blur(4px)',
             display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: 2000
           }}>
-            <div className="tarjeta-cita" style={{ width: '90%', maxWidth: '440px', boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)' }}>
+            <div className="tarjeta-cita" style={{ width: '90%', maxWidth: '440px', maxHeight: '85vh', overflowY: 'auto', boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)' }}>
               <h2 className="titulo-cita" style={{ marginBottom: '20px' }}>Modificar Cita</h2>
               
               <form onSubmit={handleGuardarModificacion}>
-                <label style={{ fontSize: '13px', fontWeight: 700, color: '#64748b', display: 'block', marginBottom: '4px' }}>Nueva Fecha</label>
-                <input type="date" name="fecha" className="input-cita" value={datosEditar.fecha} onChange={handleEditChange} required />
                 
-                <label style={{ fontSize: '13px', fontWeight: 700, color: '#64748b', display: 'block', marginBottom: '4px' }}>Nueva Hora</label>
-                <input type="time" name="hora" className="input-cita" value={datosEditar.hora} onChange={handleEditChange} required />
-
-                <label style={{ fontSize: '13px', fontWeight: 700, color: '#64748b', display: 'block', marginBottom: '4px' }}>Médico Tratante</label>
+                <label style={{ fontSize: '13px', fontWeight: 700, color: '#64748b', display: 'block', marginBottom: '4px', textAlign: 'left' }}>Médico Tratante</label>
                 <select name="id_medico" className="input-cita" value={datosEditar.id_medico} onChange={handleEditChange} required>
                   <option value="">Seleccione un Médico</option>
                   {medicos.map((medico) => (
                     <option key={medico.id_medico} value={medico.id_medico}>
-                      {/* Muestra Nombre Apellido (Especialidad) exactamente igual que al Agendar */}
                       {medico.nombre} ({medico.especialidad})
                     </option>
                   ))}
                 </select>
 
-                <label style={{ fontSize: '13px', fontWeight: 700, color: '#64748b', display: 'block', marginBottom: '4px' }}>Motivo de la Consulta</label>
+                <label style={{ fontSize: '13px', fontWeight: 700, color: '#64748b', display: 'block', marginBottom: '4px', textAlign: 'left' }}>Nueva Fecha</label>
+                <input type="date" name="fecha" className="input-cita" value={datosEditar.fecha} onChange={handleEditChange} required />
+                
+                {/* INTERFAZ DE BOTONES DE TIEMPO REEMPLAZADA */}
+                <div style={{ margin: "5px 0 15px 0", textAlign: "left" }}>
+                  <label style={{ fontSize: '13px', fontWeight: 700, color: '#64748b', display: 'block', marginBottom: '6px' }}>
+                    Seleccione un horario (Bloques de 20 min):
+                  </label>
+
+                  {buscandoHoras && <p style={{ fontSize: "13px", color: "#666" }}>Consultando agenda libre...</p>}
+                  {mensajeHoras && <p style={{ fontSize: "13px", color: "#dc3545", fontWeight: "bold" }}>{mensajeHoras}</p>}
+
+                  <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "6px", maxHeight: '150px', overflowY: 'auto', padding: '2px' }}>
+                    {horasDisponibles.map((h) => (
+                      <button
+                        type="button"
+                        key={h.hora}
+                        onClick={() => setDatosEditar((prev) => ({ ...prev, hora: h.hora }))}
+                        style={{
+                          padding: "8px",
+                          fontSize: "13px",
+                          backgroundColor: datosEditar.hora === h.hora ? "#007bff" : "#ffffff",
+                          color: datosEditar.hora === h.hora ? "#ffffff" : "#333333",
+                          border: "1px solid #ccc",
+                          borderRadius: "6px",
+                          cursor: "pointer",
+                          fontWeight: datosEditar.hora === h.hora ? "bold" : "normal",
+                          transition: "all 0.15s ease"
+                        }}
+                      >
+                        {h.hora.substring(0, 5)}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <label style={{ fontSize: '13px', fontWeight: 700, color: '#64748b', display: 'block', marginBottom: '4px', textAlign: 'left' }}>Motivo de la Consulta</label>
                 <input type="text" name="motivo" className="input-cita" value={datosEditar.motivo} onChange={handleEditChange} placeholder="Motivo" required />
 
-                <button type="submit" className="boton-cita" style={{ marginTop: '10px' }}>Confirmar Cambios</button>
+                {/* El botón de confirmar se bloquea si el backend no ha devuelto horarios o si no seleccionó uno de los botones */}
+                <button 
+                  type="submit" 
+                  className="boton-cita" 
+                  style={{ marginTop: '10px' }}
+                  disabled={buscandoHoras || !datosEditar.hora}
+                >
+                  Confirmar Cambios
+                </button>
+                
                 <button type="button" className="boton-cita secundario" onClick={() => setCitaEditando(null)}>Salir sin Cambiar</button>
               </form>
             </div>
