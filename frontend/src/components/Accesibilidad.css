@@ -45,15 +45,30 @@
 
 /* Variables y esquema para modo de alto contraste */
 body.contraste-activo {
-    --acc-bg: #000000;
-    --acc-text: #ffffff;
-    --acc-accent: #FFD54F; /* amarillo accesible, usado por muchas aplicaciones */
-    --acc-muted: #d1d5db;
-    --acc-button-bg: var(--acc-accent);
-    --acc-button-color: #000000;
+    --acc-bg: #FFFFFF;
+    --acc-text: #1a202c;
+    --acc-accent: #4189ec;
+    --acc-muted: #FFFFFF;
+    --acc-button-bg: #bdd7f4;
+    --acc-button-color: #FFFFFF;
 
     background: var(--acc-bg) !important;
     color: var(--acc-text) !important;
+}
+/* Obliga a la targeta y a los campos a usar los cambios */
+body.contraste-activo .card,
+body.contraste-activo [class*"login"] {
+    background-color: var(--ac-muted) !important;
+    border: 2px solid var(--ac-accent) !important;
+}
+body.contraste-activo input {
+    background-color: #ffffff !important;
+    color: var(--acc-text) !important;
+    border: 1px solid var(--acc-accent) !important;
+}
+body.contraste-activo div[ style*="background-color"] {
+    background-color: var(--acc-muted) !important;
+    border: 2px solid var(--acc-accent) !important;
 }
 
 
@@ -194,12 +209,12 @@ body.contraste-activo .panel-accesibilidad {
 
 /* Aumentar/disminuir aplicando clases al elemento <body> desde el componente */
 body.letra-grande {
-    font-size: 115% !important;
+    font-size: 160% !important;
     line-height: 1.6 !important;
 }
 
 body.letra-extra-grande {
-    font-size: 130% !important;
+    font-size: 180% !important;
     line-height: 1.75 !important;
 }
 
@@ -232,4 +247,20 @@ body.contraste-activo .panel-accesibilidad button {
         transition: none !important;
         animation: none !important;
     }
+}
+/* Color de las letras de los campos Botones */
+body.contraste-activo input,
+body.contraste-activo .p-inputtext,
+body.contraste-activo .p-placeholder,
+body.contraste-activo .p-dropdown-label.p-placeholder,
+body.contraste-activo [class*="placeholder"],
+body.contraste-activo input::placeholder,
+body.contraste-activo .p-inputtext::placeholder{
+    color: #2d3748 !important;
+    font-weight: 600 !important;
+    opacity: 1 !important;
+}
+body.contraste-activo .p-inputtext,
+body.contraste-activo input {
+    background-color: #bdd7f4 !important;
 }

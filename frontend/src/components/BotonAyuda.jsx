@@ -13,7 +13,7 @@ const BotonAyuda = () => {
         position: "fixed",
         bottom: "20px",
         right: "20px",
-        background: "rgba(255, 255, 255, 0.9)",
+        background: "rgba(184, 245, 243, 0.9)",
         border: "none",
         color: "#455a64",
         fontWeight: "bold",

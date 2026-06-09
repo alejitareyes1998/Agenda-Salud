@@ -9,9 +9,11 @@ function Accesibilidad() {
   }
 
   function aumentarLetra() {
-    if (!document.body.classList.contains("letra-grande")) {
+    if (!document.body.classList.contains("letra-grande") && !document.body.classList.contains("letra-extra-grande")) {
       document.body.classList.add("letra-grande");
+     
     } else if (!document.body.classList.contains("letra-extra-grande")) {
+      document.body.classList.add("letra-extra-grande");
       document.body.classList.add("letra-extra-grande");
     }
   }
@@ -19,6 +21,7 @@ function Accesibilidad() {
   function reducirLetra() {
     if (document.body.classList.contains("letra-extra-grande")) {
       document.body.classList.remove("letra-extra-grande");
+      document.body.classList.add("letra-grande");
     } else if (document.body.classList.contains("letra-grande")) {
       document.body.classList.remove("letra-grande");
     }
@@ -57,7 +60,7 @@ function Accesibilidad() {
             <span className="texto">Contraste</span>
           </button>
           <button title="Reducir letra" onClick={reducirLetra}>
-            <span className="icono">A-</span>
+            <span className="icono">A</span>
             <span className="texto">Reducir letra</span>
           </button>
           <button title="Aumentar letra" onClick={aumentarLetra}>

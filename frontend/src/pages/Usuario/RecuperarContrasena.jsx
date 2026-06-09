@@ -1,13 +1,16 @@
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { InputText } from 'primereact/inputtext';
 import { Button } from 'primereact/button';
 import { Card } from 'primereact/card';
 import BotonAyuda from '../../components/BotonAyuda';
 import axios from 'axios';
+import { AlertaContext } from '../../context/AlertaContenedorContext';
 
 
     const RecuperarContrasena = () => {
+    // Ventana flotante
+    const { mostrarAlertaGlobal } = useContext(AlertaContext);
 
     // Estado para guardar el correo escrito por el usuario
     const [correo, setCorreo] = useState('');
@@ -18,7 +21,7 @@ import axios from 'axios';
     e.preventDefault();
 
     if (!correo.trim()) {
-        alert('Por favor ingresa tu correo electrónico.');
+        mostrarAlertaGlobal('Por favor ingresa tu correo electrónico.');
         return;
     }
 
@@ -30,7 +33,7 @@ import axios from 'axios';
     
         // Si el backend responde correctamente, mostramos mensaje de éxito
         if (respuesta.status === 200) {
-            alert('Su correo a sido confirmado. Se ha enviado un código de recuperación a tu correo');
+            mostrarAlertaGlobal('Su correo a sido confirmado. Se ha enviado un código de recuperación a tu correo');
             navigate('/validar-codigo');
         }
         
@@ -39,7 +42,7 @@ import axios from 'axios';
         console.log('Error al recuperar contraseña:', error.response?.data || error.message);
     
         // Mensaje para el usuario
-        alert('No fue posible enviar la solicitud. Verifica que el correo esté registrado.');
+        mostrarAlertaGlobal('No fue posible enviar la solicitud. Verifica que el correo esté registrado.');
     }
 };
 
@@ -64,7 +67,7 @@ import axios from 'axios';
     <Card
         className='shadow-8'
         style={{
-            width: '22rem',
+            width: '20rem',
             borderRadius: '15px',
             backgroundColor: 'rgba(255, 255, 255, 0.92)'
         }}
@@ -104,6 +107,7 @@ import axios from 'axios';
                     onChange={(e) => setCorreo(e.target.value)}
                     placeholder='prueba@ejemplo.com'
                     className='w-full p-inputtext-sm'
+                    style={{ height: '38px', fontSize: '16px', fontWeight: '600' }}
                 />
             </div>
 
@@ -111,6 +115,7 @@ import axios from 'axios';
         type='submit'
         label='Recuperar'
         className='w-full mt-2 btn-principal p-button-sm'
+        style={{ height: '38px', fontSize: '16px', fontWeight: '600' }}
         />
 
         </form>
@@ -121,6 +126,7 @@ import axios from 'axios';
             label='Volver al Login'
             onClick={() => navigate('/login')}
             className='w-full mt-2 btn-principal p-button-sm'
+            style={{ height: '38px', fontSize: '16px', fontWeight: '600' }}
         />
 
             </div>

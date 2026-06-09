@@ -1,10 +1,12 @@
-import  { useState } from "react";
+import  { useState, useContext } from "react";
 import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { InputText } from 'primereact/inputtext';
 import './RegistroMedico.css';
-
+import { AlertaContext } from '../../context/AlertaContenedorContext';
 const RegistroMedico = () => {
+    // Ventana flotante
+    const { mostrarAlertaGlobal } = useContext(AlertaContext);
     const location = useLocation();
     const navigate = useNavigate();
     // Captura el ID del usuario
@@ -44,12 +46,12 @@ const RegistroMedico = () => {
         //Peticion HHTP usando Axios hacia el backend en NodeJS
         const respuesta = await axios.post('http://localhost:3000/api/medico', payload);
         if (respuesta.status === 200 || respuesta.status === 201) {
-            alert("Medico registrado con exito.");
+            mostrarAlertaGlobal("Medico registrado con exito.");
             navigate('/login'); // Redirige al LOgin corporativo
         }
      } catch (error) {
         console.error("Error al registrar medico:", error.response?.data || error.message);
-        alert("Hubo un error al guardar los datos de acreditacion.");
+        mostrarAlertaGlobal("Hubo un error al guardar los datos de acreditacion.");
      }
 };
     

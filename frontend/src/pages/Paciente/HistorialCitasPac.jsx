@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from "react";
+import  { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import PanelLayout from "../../layouts/PanelLayout";
 import apiConfig from "../../api/apiConfig"; // Usamos la configuración centralizada
-import '../Cita/Cita.css'; // Manteniendo los estilos de inputs, tarjetas y botones de Cita
+import '../Citas/Citas.css'; // Manteniendo los estilos de inputs, tarjetas y botones de Cita
 
 export default function HistorialCitasPac() {
   const navigate = useNavigate();
@@ -48,7 +48,7 @@ export default function HistorialCitasPac() {
     };
 
     obtenerDatos();
-  }, [idPaciente]);
+  }, [idPaciente,]);
 
   // DELETE: Eliminar la cita médica en la BD
   const handleEliminar = async (idCita) => {

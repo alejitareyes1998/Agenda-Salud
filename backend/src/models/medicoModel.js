@@ -133,5 +133,17 @@ const Medico = {
         }
     }
 };
+obtenerTodos: async () => {
+    const connection = await db.getConnection();
+    try {
+        const [rows] = await connection.query('SELECT m.id_medico, u.nombre, e.nombre_especialidad FROM medico m JOIN usuario u ON m.id_usuario = u.id_usuario JOIN e ON m.id_especialista = e.id_especialista');
+        return rows;
+    } catch (err) {
+        throw err;
+    } finally {
+        connection.release();
+    }
+  },
+
 module.exports = Medico;
 

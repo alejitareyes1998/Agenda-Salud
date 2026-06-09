@@ -1,9 +1,12 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import axios from "axios";
 import { useLocation, useNavigate } from 'react-router-dom';
 import './RegistroPaciente.css';
+import { AlertaContext } from '../../context/AlertaContenedorContext';
 
 const RegistroPaciente = () => {
+    //V/ Ventana flotante
+    const { mostrarAlertaGlobal } = useContext(AlertaContext);
     const location = useLocation();
     const navigate = useNavigate();
     const usuarioId = location.state?.usuarioId;
@@ -24,7 +27,7 @@ const RegistroPaciente = () => {
 
     const handleFinalizar = async () => {
         if (!datos.id_usuario) {
-            alert("Error: No se recibio el ID del usuario. Los datos no se guardaron el la BD:");
+            mostrarAlertaGlobal("Error: No se recibio el ID del usuario. Los datos no se guardaron el la BD:");
             return;
         }
 
@@ -36,12 +39,12 @@ const RegistroPaciente = () => {
                     localStorage.setItem('id_paciente', String(idPaciente));
                 }
                 localStorage.setItem('id_usuario', String(datos.id_usuario));
-                alert("Usuario registrado.");
+                mostrarAlertaGlobal("Usuario registrado.");
                 navigate('/login');
             }
         } catch (error) {
             console.error("Error al guardar:", error);
-            alert("Error al crear la cuenta. No se pudo completar el registro");
+            mostrarAlertaGlobal("Error al crear la cuenta. No se pudo completar el registro");
         }
     };
 

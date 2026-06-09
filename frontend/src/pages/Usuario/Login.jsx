@@ -1,15 +1,15 @@
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom'; //Sirve para cambiar de pagina desde codigo
 import { InputText } from 'primereact/inputtext';
 import { Password } from 'primereact/password';
 import { Button } from 'primereact/button';
 import { Card } from 'primereact/card';
-
-
 import axios from 'axios';
+import { AlertaContext } from '../../context/AlertaContenedorContext';
 
 const Login = () => {
     const navigate = useNavigate(); //Prepara la funcion para enviar al usuario de Login a otra pagina
+    const { mostrarAlertaGlobal } = useContext(AlertaContext);
     // 1. Estados para guardar lo que el usuario escribe
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -36,20 +36,28 @@ const Login = () => {
                 if (idUsuario) {
                     localStorage.setItem('id_usuario', String(idUsuario));
                 }
-
+                //props.onLoginSuccess();
                 const rolUsuario = datosUnificados.tipo_usuario;
 
                 if (rolUsuario === 'admin') {
-                    navigate('/admin');
+                    mostrarAlertaGlobal('¡Inicio Exitoso!', 'Bienvenido Administrador.', 'success');
+                    setTimeout(() => navigate('/admin'), 3000);
                 } else if (rolUsuario === 'medico') {
-                    navigate('/panel-medico');
+                    mostrarAlertaGlobal('¡Inicio Exitoso!', 'Bienvenido Doctor(a).', 'success');
+                    setTimeout(() => navigate('/panel-medico'), 3000);
                 } else {
-                    navigate('/panel-paciente');
+                    mostrarAlertaGlobal('¡Inicio Exitoso!', 'Bienvenido a su portal de salud.', 'success');
+                    setTimeout(() => navigate('/panel-paciente'), 3000);
                 }
             }
         } catch (error) {
             console.log("Error completo:", error.response?.data || error.message);
-            alert("Usuario o contraseña incorrectos. Verifica la información ingresada e intenta nuevamente.");
+            // 1. Si el servidor esta caido o MySQL no responde.
+            if (!error.response) {
+                mostrarAlertaGlobal('Error de Conexion', 'No se pudo establecer comunicacion con el centro medico. Intentelo mas tarde.', 'error');
+            }
+            // 2. Si el backend si responde, pero rechaza las credenciales (Codigo 401, 400, etc)
+            mostrarAlertaGlobal('Acceso Invalido', 'Usuario o contraseña incorrectos. Verifica la informacion e intenta nuevamente.', 'error');
         }
     };
 
@@ -66,26 +74,39 @@ const Login = () => {
             top: 0,
             left: 0
         }}>
-            <Card className='shadow-8' style={{ width: '22rem', borderRadius: '15px', backgroundColor: 'rgba(255, 255, 255, 0.92)' }}>
-                <div className='flex flex-column align-items-center mb-4'>
-                    <img src='/imagenes/logo.png' alt='Logo Agenda Salud' style={{ width: '150px' }} />
-                    <h2 className='text-900 font-bold mt-3 mb-0'>Bienvenido</h2>
-                    <p className='text-600 font-mediun'>Agenda Salud</p>
+            <Card 
+            className='shadow-8'
+             style={{
+                 //width: '20rem',
+                 minHeight: '420px',
+                  borderRadius: '15px',
+                  backgroundColor: 'rgba(255, 255, 255, 0.92)',
+                  paddingTop: '10px'
+                 }}>
+                <div className='flex flex-column align-items-center mb-'>
+                    <img src='/imagenes/logo.png'
+                     alt='Logo Agenda Salud'
+                      style={{ width: '120px'
+                       }}
+                        />
+                    <h2 className='text-900 font-bold mt-0 mb-0'>Bienvenido</h2>
+                    <p className='text-600 font-mediun'></p>
                 </div>
 
-                <form onSubmit={handleLogin} className='flex flex-column gap-3'>
-                    <div className='flex flex-column gap-2'>
-                        <label htmlFor='email' className='text-sm font-bold'>Correo Electronico</label>
+                <form onSubmit={handleLogin} className='flex flex-column gap-2 w-full'>
+                    <div className='flex flex-column gap-1 w-full'>
+                        <label className='email' className='text-sm font-bold'>Correo Electronico</label>
                         <InputText
                             id='email'
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
                             placeholder='usuario@correo.com'
-                            className='w-full p-inputtext-sm'
+                            className='w-full p-inputtext-sm placeholder:font-bold font-bold'
+                            style={{ height: '38px', fontSize: '15px' }}
                         />
                     </div>
 
-                    <div className='flex flex-column gap-2'>
+                    <div className='flex flex-column gap-1 w-full'>
                         <label htmlFor='password' title='Contraseña' className='text-sm font-bold'>Contraseña</label>
                         <Password
                             id='password'
@@ -94,8 +115,11 @@ const Login = () => {
                             toggleMask
                             feedback={false}
                             className='w-full'
-                            inputClassName='w-full p-inputtext-sm'
-                            placeholder='Contraseña'
+                            style={{ width: '100%', height: '38px'  }}
+                            inputClassName='w-full placeholder:font-semibold'
+                            inputStyle={{ width: '100%', height: '100%', fontSize:'15px', fontWeight: 'bold'  }}
+                            placeholder='Minimo 8 Caracteres'
+                           
                         />
                     </div>
 
@@ -103,12 +127,14 @@ const Login = () => {
                         <Button
                             type="submit"
                             label='Ingresar'
-                            className='w-full'
+                            className='w-full mt-1'
                             style={{
                                 background: 'linear-gradient(to right, #89cff0 0%, #b3e5fc 100%)',
                                 border: ' none',
                                 color: '#455a64',
-                                fontWeight: 'bold'
+                                fontWeight: 'bold',
+                                height: '35px', fontSize: '16px',
+                                fontWidth: '600'
                             }}
                         />
 
@@ -116,20 +142,23 @@ const Login = () => {
                             type="button"
                             label='Registrarse'
                             onClick={() => navigate('/registro')}
-                            className='w-full mt-2'
+                            className='w-full mt-1'
                             style={{
                                 background: ' linear-gradient(to right, #e1bee7 0%, #f3e5f5 100%)',
                                 border: 'none',
                                 color: '#455a64',
-                                fontWeight: 'bold'
+                                fontWeight: 'bold',
+                                 height: '35px', fontSize: '16px',
+                                 fontWidth: '600'
                             }}
                         />
                     </div>
 
-                    <div className='text-center mt-2'>
+                    <div className='text-center mt-[15px] w-full' style={{ display: 'block', width: '100%' }}>
                         <span
                             onClick={() => navigate('/recuperar-contrasena')}
-                            className='text-xs no-underline text-primary font-bold cursor-pointer'
+                            className='no-underline text-primary font-bold cursor-pointer'
+                            style={{ fontSize: '15px', display: 'inline-block', width: '100%' }}
                         >
                             ¿Olvidaste tu contraseña?
                         </span>

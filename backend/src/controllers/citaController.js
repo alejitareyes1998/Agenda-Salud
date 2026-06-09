@@ -15,9 +15,9 @@ exports.getAllCitas = async (req, res) => {
         const result = await Cita.create(datos);
             res.status(201).json({ mensaje: "Cita programada con exito", id: result.insertId,
             recordatorio: [
-                "Se recomienda llegar 20 minutos antes de su cita, para evitar retrasos y garantizar una atencion oportuna.",
+                "Se recomienda llegar 20 minutos antes de su cita",
                 "Recuerde traer su documento de identidad y cualquier informacion medica relevante para su consulta.",
-                "Si desea cancelar o reprogramar su cita, por favor hacerlo minimo con 12 horas de anticipacion para evitar cargos por cancelacion tardia."
+                "Si desea cancelar o reprogramar su cita, por favor hacerlo con 24 horas de antelacion"
             ]
         });
         } catch (err) {
@@ -32,9 +32,9 @@ exports.getAllCitas = async (req, res) => {
             await Cita.update(id, datos);
             res.status(200).json({ mensaje: "cita actualizada correctamente",
             recordatorios: [
-                "Recuerde: Se recomienda llegar 20 minutos antes de su cita, para evitar retrasos y garantizar una atencion oprtuna.",
+                "Recuerde llegar 20 minutos antes de su cita",
                 "Recuerde traer su documento de identidad y cualquier informacion medica relevante para su consulta.",
-                "Si desea cancelar o reprogramar su cita, por favor hacerlo minimo con 12 horas de anticipacion para evitar cargos por cancelacion tardia."
+                "Si desea cancelar o reprogramar su cita, por favor hacerlo minimo con 24 horas de antelacion."
             ]
         });
         } catch (err) {

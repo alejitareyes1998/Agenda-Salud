@@ -18,23 +18,24 @@ return (
         position: "absolute",
         top: 0,
         left: 0,
-        padding: "2rem 0"
+        padding: "0.5rem 0"
     }}
     >
       {/* Tarjeta principal de ayuda */}
     <Card
         className="shadow-8"
         style={{
-        width: "32rem",
+        width: "24rem",
         borderRadius: "15px",
-        backgroundColor: "rgba(255, 255, 255, 0.92)"
+        backgroundColor: "rgba(255, 255, 255, 0.92)",
+        fontSize: "12px"
         }}
     >
         <div className="flex flex-column align-items-center mb-4">
         <img
             src="/imagenes/logo.png"
             alt="Logo Agenda Salud"
-            style={{ width: "120px" }}
+            style={{ width: "100px" }}
         />
 
         <h2 className="text-900 font-bold mt-3 mb-0">¿Necesitas Ayuda?</h2>
@@ -45,9 +46,9 @@ return (
         </div>
 
         {/* Contenido de ayuda para el usuario */}
-        <div className="flex flex-column gap-3">
+        <div className="flex flex-column gap-1">
         <div>
-            <h3>¿Cómo registrarse?</h3>
+            <h4>¿Cómo registrarse?</h4>
                 <p>
                 Para crear una cuenta, ingresa a la opción de registro desde la pantalla de inicio de sesión.
                 Completa tus datos personales, selecciona tu tipo de documento, escribe tu número de documento,
@@ -60,7 +61,7 @@ return (
         </div>
 
         <div>
-            <h3>¿Cómo iniciar sesión?</h3>
+            <h4>¿Cómo iniciar sesión?</h4>
                 <p>
                 Una vez registrado, vuelve a la pantalla de login e ingresa tu correo electrónico
                 y contraseña. Si los datos son correctos, podrás acceder al sistema según tu tipo de usuario.
@@ -68,7 +69,7 @@ return (
         </div>
 
         <div>
-            <h3>¿Cómo agendar una cita?</h3>
+            <h4>¿Cómo agendar una cita?</h4>
                 <p>
                 Después de iniciar sesión como paciente, ingresa al panel principal y busca la opción
                 para agendar una cita médica. Allí podrás seleccionar el especialista, la fecha y el horario
@@ -80,7 +81,7 @@ return (
         </div>
 
         <div>
-            <h3>¿Cómo recuperar tu contraseña?</h3>
+            <h4>¿Cómo recuperar tu contraseña?</h4>
 
                 <p>
                     Si olvidaste tu contraseña, puedes recuperarla desde la opción 
@@ -104,7 +105,7 @@ return (
         </div>
 
         <div>
-            <h3>¿Qué hacer si tienes problemas?</h3>
+            <h4>¿Qué hacer si tienes problemas?</h4>
                 <p>
                 Verifica que todos los campos estén completos y que la información ingresada sea correcta.
                 Si el problema continúa, comunícate con el personal encargado del sistema.

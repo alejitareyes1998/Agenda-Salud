@@ -1,21 +1,18 @@
 
-import { BrowserRouter as Router, Routes,Route, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes,Route, Navigate, Outlet } from 'react-router-dom';
 import Login from './pages/Usuario/Login';
 import Registro from './pages/Usuario/Registro';
 import Ayuda from './pages/Usuario/Ayuda';
 import RecuperarContrasena from './pages/Usuario/RecuperarContrasena';
-
 import PanelPaciente from './pages/Paciente/PanelPaciente';
 import Medicos from './pages/Paciente/Medicos';
 import PerfilPaciente from './pages/Paciente/PerfilPaciente';
+import Citas from './pages/Citas/Citas';
 import HistorialCitasPac from './pages/Paciente/HistorialCitasPac';
-
 import PanelMedico from './pages/Medico/PanelMedico';
 import PerfilMedico from './pages/Medico/PerfilMedico';
 import HistorialCitasMed from './pages/Medico/HistorialCitasMed';
 import TusPacientes from './pages/Medico/TusPacientes';
-
-
 import Accesibilidad from './components/Accesibilidad';
 import BotonAyuda from './components/BotonAyuda';
 import BotonAtras from './components/BotonAtras';
@@ -23,15 +20,21 @@ import ValidarCodigo from './pages/Usuario/ValidarCodigo';
 import CambioContrasena from './pages/Usuario/CambioContrasena';
 import RegistroPaciente from './pages/Paciente/RegistroPaciente';
 import RegistroMedico from './pages/Medico/RegistroMedico';
-import Cita from './pages/Cita/Cita'
 
+import { AlertaProvider}  from './context/AlertaContenedorContext';
 
 // Creamos componentes rapidos para probar que las rutas funcionen
+function GuardianRutas() {
+  const tokenValido = localStorage.getItem("token_agenda");
+  return tokenValido ? <Outlet /> : <Navigate to="/" replace />;
+}
+
 const AdminPanel = () => <div className='p-5'><h1>Panel de Administracion</h1><p>Bienvenido dueño del centro medico.</p></div>;
 
 
 function App() {
   return (
+    <AlertaProvider>
     <Router>
       <BotonAyuda />
       <BotonAtras />
@@ -50,13 +53,16 @@ function App() {
         <Route path='/panel-medico' element={<PanelMedico />} />
         <Route path='/perfil-medico' element={<PerfilMedico />} />
         <Route path='/historial-citas-med' element={<HistorialCitasMed />} />
-        <Route path='/tus-pacientes' element={<TusPacientes />} />
-
+       
         {/* RUTA: Panel Paciente*/}
+        <Route element={<GuardianRutas />}>
         <Route path='/panel-paciente' element={<PanelPaciente />} />
         <Route path='/medicos' element={<Medicos />} />
         <Route path='/perfil' element={<PerfilPaciente />} />
         <Route path='/historial-citas-pac' element={<HistorialCitasPac />} />
+        <Route path='/tus-pacientes' element={<TusPacientes />} />
+        <Route path='/citas' element={<Citas />} />
+        </Route>
 
         {/* RUTA: Registro Usuario*/}
         <Route path='/registro' element={<Registro />} />
@@ -75,13 +81,13 @@ function App() {
         {/* Ruta para completar datos del medico*/}
         <Route path='/registro-medico' element={<RegistroMedico />} />
         {/*Ruta para agendar cita*/}
-        <Route path='/agendar-cita' element={<Cita />} />
 
         {/* Siempre debe ir al final. REGLA DE SEGURIDAD: Si alguien escribe una ruta que no existe, lo mandamos al Login */}
         <Route path='*' element={<Navigate to='/login' />} />
 
       </Routes>
     </Router>
+    </AlertaProvider>
   );
 }
 

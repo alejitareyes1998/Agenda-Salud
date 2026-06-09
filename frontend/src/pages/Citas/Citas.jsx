@@ -1,9 +1,11 @@
 import './Citas.css';
-import  { useState, useEffect } from 'react';
+import  { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-
+import { AlertaContext } from '../../context/AlertaContenedorContext';
 function Cita() {
+    // Ventana flotante
+    const { mostrarAlertaGlobal } = useContext(AlertaContext);
     const navigate = useNavigate();
     const [datos, setDatos] = useState({
         fecha: '',
@@ -15,14 +17,18 @@ function Cita() {
     const [medicos, setMedicos] =useState([]);
     const API_URL = 'http://localhost:3000/api/cita';
     const API_MEDICOS_URL = 'http://localhost:3000/api/medico';
+    
     // NUEVO: peticion GET al backend para cargar medicos en el selector
     useEffect(() => {
         const obtenerMedicos = async () => {
             try {
-                const respuesta = await axios.get(API_MEDICOS_URL);
+                const token = localStorage.getItem('token');
+                const respuesta = await axios.get(API_MEDICOS_URL, {
+                    headers: {authorization: `bearer ${token}` }
+                });
                 setMedicos(respuesta.data); // Guardar el resultado en MySQL
             } catch (error) {
-                console.error("Error al cargar liata de medicos:", error);
+                console.error("Error al cargar lista de medicos:", error);
             }
         };
         obtenerMedicos();
@@ -39,7 +45,7 @@ function Cita() {
         e.preventDefault();
         // Validacion de campos vacios
         if (!datos.fecha || !datos.hora || !datos.id_medico || !datos.motivo) {
-            alert('Por favor, completa todos los campos.');
+            mostrarAlertaGlobal('Por favor, completa todos los campos.');
             return;
         }
         const idPaciente = localStorage.getItem('id_paciente');
@@ -61,7 +67,7 @@ function Cita() {
             
             const respuesta = await axios.post(API_URL, datosAEnviar, configuracion);
             const textos = respuesta.data.recordatorio.join('\n\n');
-            alert(`¡Cita agendada con exito!\n\nRECORDATORIOS:\n${textos}`);
+            mostrarAlertaGlobal(`¡Cita agendada con exito!\n\nRECORDATORIOS:\n${textos}`);
             // Limpiamos el formulario
             setDatos({ fecha: '', hora: '', id_medico: '', motivo: '' });
             // Redireccion al panel principal tras el exito
@@ -69,7 +75,7 @@ function Cita() {
         } catch (error) {
             console.error('Error al agendar cita:', error);
             // Muestra el mensaje de error que envia el backend, si existe
-            alert(error.response?.data?.mensaje || 'Error al guardar en la base de datos.');
+            mostrarAlertaGlobal(error.response?.data?.mensaje || 'Error al guardar en la base de datos.');
         } finally {
             setCargando(false);
         }
@@ -111,7 +117,8 @@ function Cita() {
                     {/* Aqui asumimos que la variable "medicos"viene de un estado superior o de fetch */}
                     {typeof medicos !== 'undefined' && medicos.map((medico) => (
                         <option key={medico.id_medico}
-                        value={medico.id_medico}>{medico.nombre}
+                        value={medico.id_medico}>{medico.nombre} 
+                        
                         </option>
          ))}
                 </select>

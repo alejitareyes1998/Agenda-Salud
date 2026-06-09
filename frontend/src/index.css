@@ -6,3 +6,39 @@
   font-weight: bold;
 }
 
+/* Forzar la altura del contenedor exterior */
+.dropdown-bajito {
+  height: 1.5rem !important;
+  min-height: 1.5rem !important;
+}
+/* Arreglar contenedor del texto */
+.dropdown-bajito .dropdown-label {
+  padding: 0 0px 0 12px !important;
+  height: 100% !important;
+  display: flex !important;
+  align-items: center !important;
+}
+/* Redimencionar la seccion de la flecha */
+.dropdown-bajito .dropdown-trigger {
+  width: 2rem !important;
+  height: 100% !important;
+}
+/* Obligar al contenedor de la contraseña a ocupar todo el ancho */
+.p-password {
+  display: flex !important;
+  width: 100% !important;
+}
+/* Obligar al input de la contraseña a ocupar todo el ancho */
+.p-password input {
+  width: 100% !important;
+}
+
+.p-dropdown,
+.p-dropdown * { 
+    border-color: transparent !important;
+    box-shadow: none !important;
+}
+
+
+
+

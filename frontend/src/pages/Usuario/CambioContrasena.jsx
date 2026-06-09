@@ -1,12 +1,15 @@
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Password } from 'primereact/password';
 import { Button } from 'primereact/button';
 import { Card } from 'primereact/card';
 import axios from 'axios';
+import { AlertaContext } from '../../context/AlertaContenedorContext';
 
 // Página para cambiar la contraseña
-const CambiarContrasena = () => {
+const CambiarContrasena = () => { 
+    // Ventana flotante
+    const { mostrarAlertaGlobal } = useContext(AlertaContext)
     const navigate = useNavigate();
     // Estado para guardar la nueva contraseña
     const [nuevaContrasena, setNuevaContrasena] = useState('');
@@ -20,44 +23,44 @@ const CambiarContrasena = () => {
 
     // Validamos que la nueva contraseña no esté vacía
     if (!nuevaContrasena.trim()) {
-        alert('Por favor ingresa la nueva contraseña.');
+        mostrarAlertaGlobal('Por favor ingresa la nueva contraseña.');
         return;
     }
 
     // Validamos que la confirmación no esté vacía
     if (!confirmarContrasena.trim()) {
-        alert('Por favor confirma la nueva contraseña.');
+        mostrarAlertaGlobal('Por favor confirma la nueva contraseña.');
         return;
     }
     // Validamos que tenga al menos una letra mayúscula
     if (!/[A-Z]/.test(nuevaContrasena)) {
-        alert('La contraseña debe tener al menos una letra mayúscula.');
+        mostrarAlertaGlobal('La contraseña debe tener al menos una letra mayúscula.');
         return;
     }
 
     // Validamos que tenga al menos una letra minúscula
     if (!/[a-z]/.test(nuevaContrasena)) {
-        alert('La contraseña debe tener al menos una letra minúscula.');
+        mostrarAlertaGlobal('La contraseña debe tener al menos una letra minúscula.');
         return;
     }
 
     // Validamos que tenga al menos 6 números
     const cantidadNumeros = nuevaContrasena.replace(/[^0-9]/g, '').length;
 
-    if (cantidadNumeros < 6) {
-        alert('La contraseña debe tener al menos 6 números.');
+    if (cantidadNumeros < 4) {
+        mostrarAlertaGlobal('La contraseña debe tener al menos 4 números.');
         return;
     }
 
     // Validamos que tenga al menos un carácter especial
     if (!/[!@#$%^&*(),.?":{}|<>_\-+=/\\[\];'`~]/.test(nuevaContrasena)) {
-        alert('La contraseña debe tener al menos un carácter especial.');
+        mostrarAlertaGlobal('La contraseña debe tener al menos un carácter especial.');
         return;
     }
 
     // Validamos que ambas contraseñas sean iguales
     if (nuevaContrasena !== confirmarContrasena) {
-        alert('Las contraseñas no coinciden.');
+        mostrarAlertaGlobal('Las contraseñas no coinciden.');
         return;
     }
 
@@ -66,7 +69,7 @@ const CambiarContrasena = () => {
 
     // Validamos que exista el código antes de cambiar la contraseña
     if (!codigoRecuperacion) {
-        alert('No se encontró un código de recuperación validado.');
+        mostrarAlertaGlobal('No se encontró un código de recuperación validado.');
         return;
     }
 
@@ -78,13 +81,13 @@ try {
 });
 
     if (respuesta.status === 200) {
-        alert('Contraseña recibida correctamente por el backend.');
+        mostrarAlertaGlobal('Nueva Contraseña Registrada');
         navigate('/login');
     }
 
 } catch (error) {
     console.log('Error al cambiar contraseña:', error.response?.data || error.message);
-    alert('No fue posible cambiar la contraseña.');
+    mostrarAlertaGlobal('No fue posible cambiar la contraseña.');
 }
 };
 
@@ -108,17 +111,19 @@ try {
         <Card
                 className='shadow-8'
                 style={{
-                    width: '22rem',
+                    width: '20rem',
                     borderRadius: '15px',
-                    backgroundColor: 'rgba(255, 255, 255, 0.92)'
+                    backgroundColor: 'rgba(255, 255, 255, 0.92)',
+                    height: '480px'
                 }}
+                contentStyle= {{ padding: '1rem 1.5rem 0.5rem 1.5rem' }}
             >
-            <div className='flex flex-column align-items-center mb-4'>
+            <div className='flex flex-column align-items-center mb-0'>
                 {/* Logo */}
                 <img
                     src='/imagenes/logo.png'
                     alt='Logo Agenda Salud'
-                    style={{ width: '150px' }}
+                    style={{ width: '120px' }}
                 />
 
                 {/* Título principal */}
@@ -147,11 +152,14 @@ try {
                 id='nuevaContrasena'
                 value={nuevaContrasena}
                 onChange={(e) => setNuevaContrasena(e.target.value)}
-                placeholder='Ingrese la nueva contraseña'
+                placeholder='Minimo 8 Caracteres'
                 toggleMask
                 feedback={false}
                 className='w-full'
-                inputClassName='w-full'
+                style={{ width: '100%', height: '38px' }}
+                inputStyle={{ width: '100%,', height: '100%', fontSize: '12px', fontWeight: 'bold' }}
+                inputClassName='w-full text-base font-bold'
+               
             />
 
         </div>
@@ -171,14 +179,17 @@ try {
                 toggleMask
                 feedback={false}
                 className='w-full'
-                inputClassName='w-full'
+                style={{ width: '100%', height: '38px' }}
+                inputStyle={{ width: '100%,', height: '100%', fontSize:'12px', fontWeight: 'bold' }}
+                inputClassName='w-full text-base font-bold'
             />
         </div>
         {/* Botón para guardar la nueva contraseña */}
             <Button
                 type='submit'
                 label='Guardar Contraseña'
-                className='w-full mt-2 btn-principal p-button-sm'
+                className='w-full mt-[-5px] btn-principal'
+                style={{ height: '38px', fontSize: '16px', fontWeight: 'bold' }}
             />
     </form>
 

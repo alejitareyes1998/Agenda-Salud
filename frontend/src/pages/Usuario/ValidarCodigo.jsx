@@ -1,13 +1,15 @@
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { InputText } from 'primereact/inputtext';
 import { Button } from 'primereact/button';
 import { Card } from 'primereact/card';
 import axios from 'axios';
-
+import { AlertaContext } from '../../context/AlertaContenedorContext';
 
 // Página para validar el código de recuperación
 const ValidarCodigo = () => {
+// Ventana flotante
+const { mostrarAlertaGlobal } = useContext(AlertaContext);
 // Estado para guardar el código escrito por el usuario
 const [codigo, setCodigo] = useState('');
 // Preparamos la navegación entre páginas
@@ -20,7 +22,7 @@ const handleValidarCodigo = async (e) => {
 
     // Validamos que el usuario haya escrito el código
     if (!codigo.trim()) {
-        alert('Por favor ingresa el código de recuperación.');
+        mostrarAlertaGlobal('Por favor ingresa el código de recuperación.');
         return;
     }
 
@@ -35,7 +37,7 @@ const handleValidarCodigo = async (e) => {
             // Guardamos temporalmente el código validado
             localStorage.setItem('codigoRecuperacion', codigo);
         
-            alert('Código validado correctamente.');
+            mostrarAlertaGlobal('Código validado correctamente.');
         
             // Enviamos al usuario a cambiar contraseña
             navigate('/cambio-contrasena');
@@ -45,7 +47,7 @@ const handleValidarCodigo = async (e) => {
         console.log('Error al validar código:', error.response?.data || error.message);
     
         // Mensaje para el usuario
-        alert('El código ingresado no es válido.');
+        mostrarAlertaGlobal('El código ingresado no es válido.');
     }
 };
     
@@ -69,7 +71,7 @@ const handleValidarCodigo = async (e) => {
     <Card
         className='shadow-8'
         style={{
-            width: '22rem',
+            width: '20rem',
             borderRadius: '15px',
             backgroundColor: 'rgba(255, 255, 255, 0.92)'
         }}
@@ -112,7 +114,8 @@ const handleValidarCodigo = async (e) => {
                 value={codigo}
                 onChange={(e) => setCodigo(e.target.value)}
                 placeholder='Ingrese el código'
-                className='w-full'
+                className='w-full p-inputtext-sm placeholder:font-semibold'
+                style={{ height: '38px', fontSize: '16px', fontWeight: '600' }}
             />
 
         </div>
@@ -122,6 +125,7 @@ const handleValidarCodigo = async (e) => {
             type='submit'
             label='Validar Código'
             className='w-full mt-2 btn-principal p-button-sm'
+            style={{ height: '38px', fontSize: '16px', fontWeight: '600' }}
         />
 
     </form>

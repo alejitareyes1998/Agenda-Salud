@@ -1,23 +1,25 @@
-import { useState } from "react"; // Permite guardar y actualizar los datos que el usuario escribe en el formulario
+
+import { useState, useContext } from "react"; // Permite guardar y actualizar los datos que el usuario escribe en el formulario
 import { useNavigate } from "react-router-dom"; // Permite redirigir al usuario a la página de login después de registrarse
 import { Card } from "primereact/card"; //Se importa el componente Card de PrimeReact para crear una tarjeta de Registro
 import { InputText } from "primereact/inputtext"; // Formulario de texto para escribir datos como nombre, apellido, documento y correo.
 import { Password } from "primereact/password"; // Campo de contraseña con botón para mostrar u ocultar
 import { Button } from "primereact/button"; //Boton de registro
 import BotonAyuda from '../../components/BotonAyuda';
-
-import { Dropdown } from "primereact/dropdown"; // Componente desplegable para seleccionar el tipo de documento
-
 import axios from "axios"; // Permite enviar los datos del registro al backend
+import { AlertaContext } from  "../../context/AlertaContenedorContext";
+//import { classNames } from "primereact/utils";
 
 //Estados que guardan los datos del usuario
 const Registro = () => {
+  const { mostrarAlertaGlobal } =useContext(AlertaContext);
   const navigate = useNavigate();
   const [nombre, setNombre] = useState('');
   const [apellido, setApellido] = useState('');
   const [documento, setDocumento] = useState('');
   const [tipoDocumento, setTipoDocumento] = useState(null);
   const [tipoUsuario, setTipoUsuario] = useState(null);
+ 
   const opcionesTipoDocumento = [
     { label: 'Cédula de Ciudadania', value: 'cedula_de_ciudadania' },
     { label: 'Tarjeta de identidad', value: 'tarjeta_identidad' },
@@ -40,7 +42,7 @@ const Registro = () => {
   // Valida que todos los campos estén completos
   if (!nombre || !apellido || !tipoDocumento || !documento || !correo || !password  || !confirmarPassword || !tipoUsuario) 
     {
-      alert("Todos los campos son obligatorios");
+      mostrarAlertaGlobal("Todos los campos son obligatorios");
       return;
     }
 
@@ -49,7 +51,7 @@ const Registro = () => {
 const documentoValido = /^[0-9]+$/;
 
 if (!documentoValido.test(documento)) {
-  alert("El documento solo debe contener números");
+  mostrarAlertaGlobal("El documento solo debe contener números");
   return;
 }
 
@@ -57,7 +59,7 @@ if (!documentoValido.test(documento)) {
 const correoValido = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 if (!correoValido.test(correo)) {
-  alert("Ingresa un correo electrónico válido");
+  mostrarAlertaGlobal("Ingresa un correo electrónico válido");
   return;
 }
 
@@ -67,13 +69,13 @@ const passwordValida = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z\d]).{6,}$/;
 
 
   if (!passwordValida.test(password)) {
-    alert("La contraseña debe tener mínimo 6 caracteres, una mayúscula, una minúscula, un número y un carácter especial");
+    mostrarAlertaGlobal("La contraseña debe tener mínimo 6 caracteres, una mayúscula, una minúscula, un número y un carácter especial");
     return;
 }
 
 // Validamos que ambas contraseñas coincidan
 if (password !== confirmarPassword) {
-  alert("Las contraseñas no coinciden");
+  mostrarAlertaGlobal("Las contraseñas no coinciden");
   return;
 }
 
@@ -90,7 +92,7 @@ if (password !== confirmarPassword) {
       });
     
       console.log("Respuesta del backend:", respuesta.data);
-      alert("Registro Exitoso");
+      mostrarAlertaGlobal("¡Datos guardados!", "Continuar Registro", "success");
       if (tipoUsuario === 'paciente') {
         navigate('/registro-paciente', { state: { usuarioId: respuesta.data.id_usuario } });
       } else if (tipoUsuario === 'medico') {
@@ -99,7 +101,7 @@ if (password !== confirmarPassword) {
 
      } catch (error) {
       console.log("Error al registrar:", error.response?.data || error.message);
-      alert("Error al registrarse");
+      mostrarAlertaGlobal("Error al registrarse");
     }
   };
 
@@ -120,174 +122,223 @@ if (password !== confirmarPassword) {
     >
 
       <Card
-      className="shadow-8 w-full md:w-25rem"
+      className="shadow-8 w-full md:w-22rem flex-column justify-content-start"
       style= {{
-        width: '360px',
         margin: '0 auto',
         borderRadius: '15px',
-        backgroundColor: 'rgba(255, 255, 255, 0.92)'
+        backgroundColor: 'rgba(255, 255, 255, 0.92)',
+        padding: '0px 15px 0px 15px',
+        minHeight: '380px' 
       }}
       >
 
-    <div className="flex flex-column align-items-center mb-4">
+    <div className="-mt-3 flex flex-column align-items-center mb-0">
 
       <img
         src="/imagenes/logo.png"
         alt="Logo Agenda Salud"
-        style={{ width: '150px' }} // Aumento tamaño del Logo
+        style={{ width: '120px' }} // Aumento tamaño del Logo
       />
 
-      <h2 className="text-900 font-bold mt-3 mb-0">Registrarse</h2>
+      <h2 className="text-xl font-bold mt-0 mb-0 text-900">Registrarse</h2>
 
-      <p className="text-600 font-medium">
+      <p className="text-700 font-semibold">
         Ingrese sus datos personales
       </p>
     </div>
 
     {/*Formulario de registro*/}
-      <form onSubmit={handleRegistro} className="flex flex-column gap-3 ">
-        <div className="flex flex-column gap-2">
-          <label htmlFor="nombre" className="text-sm font-bold">
-            Nombre
-          </label>
-
-          <InputText
+      <form onSubmit={handleRegistro} className="flex flex-column gap-2 ">
+     
+          <>
+        <div className="flex flex-column gap-1 w-full">
+         <InputText
             id="nombre"
             value={nombre}
             onChange={(e) => setNombre(e.target.value)}
             placeholder="Nombre"
-            className="w-full"
+            className="w-full h-1.5rem p-1"
+            style={{ fontWeight: '600'}}
           />
         </div>
 
         {/* Campo para escribir el apellido del usuario */}
-        <div className="flex flex-column gap-2">
-          <label htmlFor="apellido" className="text-sm font-bold">
-            Apellido
-          </label>
+        <div className="flex flex-column gap-1 w-full">
+          
 
           <InputText
             id="apellido"
             value={apellido}
             onChange={(e) => setApellido(e.target.value)}
-            placeholder="Apellido"
-            className="w-full"
+            placeholder="Apelllido"
+            className="w-full h-1.5rem p-1"
+            style={{ fontWeight: '600'}}
           />
         </div>
 
         {/* Campo para seleccionar el tipo de documento */}
-        <div className="flex flex-column gap-2">
-          <label htmlFor="tipoDocumento" className="text-sm font-bold">
-            Tipo de documento
-          </label>
-
-          <Dropdown
+        <div className="flex flex-column gap-1 w-full" style={{ position: 'relative' }} >
+          {!tipoDocumento && (
+            <span style={{position: 'absolute',
+              left: '3px',
+              top: '20%',
+              transform: 'translayeY(-50%)',
+              color: '#777373',
+              fontWeight: '600',
+              pointerEvents: 'none',
+              fontSize: '1rem'
+            }}>
+              Tipo de Documento
+            </span>
+          )}
+           <select
             id="tipoDocumento"
-            value={tipoDocumento}
+            value={tipoDocumento || ""}
             onChange={(e) => {
-              console.log("Valor seleccionado:", e.value);
-              setTipoDocumento(e.value);
+              console.log("valor seleccionado:", e.target.value);
+              setTipoDocumento(e.target.value); 
             }}
-            options={opcionesTipoDocumento}
-            placeholder="Seleccione tipo de documento"
-            className="w-full"
-          />
+             
+            className="w-full p-inputtext"
+            style={{ height: '2rem', fontWeight: '600', paddingLeft: '10px', borderRadius: '6px',
+               appearance: 'auto' }}
+           >
+            <option value=""disabled hidden></option>
+            {opcionesTipoDocumento && opcionesTipoDocumento.map((opt) => (
+             <option key={opt.value}  value={opt.value}>{opt.label}</option>
+            ))}
+              
+            </select>
+            
+
+           
+      
         </div>
         
         {/* Campo para escribir el documento del usuario */}
-        <div className="flex flex-column gap-2">
-          <label htmlFor="documento" className="text-sm font-bold">
-            Documento
-          </label>
+        <div className="w-full">
+          
 
           <InputText
             id="documento"
             value={documento}
-            onChange={(e) => setDocumento(e.target.value)}
-            placeholder="Documento"
-            className="w-full"
+            onChange={(e) => setDocumento(e.target.value)}     
+            placeholder="Numero de Documento"
+            className="w-full h-1.5rem p-1"
+            style={{ fontWeight: '600'}}
           />
         </div>
 
         {/* Campo para escribir el correo del usuario */}
-        <div className="flex flex-column gap-2">
-          <label htmlFor="correo" className="text-sm font-bold">
-            Correo
-          </label>
+        <div className="flex flex-column gap-1 w-full">
+          
 
           <InputText
             id="correo"
             value={correo}
             onChange={(e) => setCorreo(e.target.value)}
-            placeholder="Correo"
-            className="w-full"
+            placeholder="ejemplo@correo"
+            className="w-full h-1.5rem p-1"
+            style={{ fontWeight: '600'}}
           />
         </div>
-
-        
+          
         {/* Campo para escribir la contraseña del usuario */}
-        <div className="flex flex-column gap-2">
-          <label htmlFor="password" className="text-sm font-bold">
-            Contraseña
-          </label>
-
+        <div className="flex flex-col gap-2 w-full" style={{ display: 'flex', flexDirection: 'column', writingMode: 'horizontal-tb' }}>
+          
           <Password
-            id="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="Contraseña"
-            toggleMask
-            feedback={false}
-            className="w-full"
-            inputClassName="w-full"
-          />
-        </div>
+          id="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          placeholder="Contraseña"
+          toggleMask
+          feedback={false}
+          className="w-full"
+          style={{ width: '100%', display: 'block',  writingMode: 'horizontal-tb' }}
+          inputStyle={{ width: '100%', height: '2rem', padding: '0.5rem 0.75rem', fontSize: '16px', fontWeight: '600' }}
+            pt={{ 
+            root: { style: { paddingLeft: '0px'} },
+            input: { style: { paddingLeft: '2px', marginLeft: '0px', textAlign: 'left' }}
+           }}
+         />
+      </div>
+
 
         {/*Confirmacion de contraseña*/}
-        <div className="flex flex-column gap-2">
-          <label htmlFor="confirmarPassword" className="text-sm font-bold">
-            Confirmar contraseña
-          </label>
-
+        <div className="flex flex-column gap-2 w-full">
+          
           <Password
-            id="confirmarPassword"
-            value={confirmarPassword}
-            onChange={(e) => setConfirmarPassword(e.target.value)}
-            placeholder="Confirmar contraseña"
-            toggleMask
-            feedback={false}
-            className="w-full"
-            inputClassName="w-full"
-          />
+          id="confirmarContrasena"
+          value={confirmarPassword}
+          onChange={(e) => setConfirmarPassword(e.target.value)}
+          placeholder="Confirmar Contraseña"
+          toggleMask
+          feedback={false}
+          style={{ width: '100%', display: 'block',  writingMode: 'horizontal-tb' }}
+          inputStyle={{ width: '100%', height: '2rem', padding: '0.5rem 0.75rem', fontSize: '16px', fontWeight: '600' }}
+            pt={{ 
+            root: { style: { paddingLeft: '0px'} },
+            input: { style: { paddingLeft: '2px', marginLeft: '0px', textAlign: 'left' }}
+           }}
+         />
+                  {/*Tipo usuario*/}
         </div>
-        <div className="flex flex-column gap-2 mt-3">
-           <label htmlFor="tipoUsuario" className="text-sm font-bold">
-             Tipo Usuario
-           </label>
-           <Dropdown
-           id="tipoUsuario"
-           value={tipoUsuario}
-           options={opcionesTipoUsuario}
-           onChange={(e) => setTipoUsuario(e.value)}
-           placeholder="Seleccione su rol"
-           className="w-full" />
-
-        </div>
-
+        <>
+        <div className="flex flex-column gap-1 mt-2" style={{ position: 'relative' }}>
+          {!tipoUsuario && (
+            <span style={{position: 'absolute',
+              left: '3px',
+              top: '20%',
+              transform: 'translayeY(-50%)',
+              color: '#777373',
+              fontWeight: '600',
+              pointerEvents: 'none',
+              fontSize: '1rem'
+            }}>
+              Tipo de Documento
+            </span>
+          )}
+           <select
+            id="tipoUsuario"
+            value={tipoUsuario || ""}
+            onChange={(e) => {
+              console.log("valor seleccionado:", e.target.value);
+              setTipoUsuario(e.target.value); 
+            }}
+             className="w-full p-inputtext"
+            style={{ height: '2rem', fontWeight: '600', paddingLeft: '10px', borderRadius: '6px',
+               appearance: 'auto' }}
+            
+           >
+            <option value=""disabled hidden></option>
+            {opcionesTipoUsuario&& opcionesTipoUsuario.map((opt) => (
+             <option key={opt.value}  value={opt.value}>{opt.label}</option>
+            ))}
+              
+            </select>
+          
+            </div> 
+          </>
         {/* Botón de registro */}
         <Button
           type="submit"
-          label="Registrarse"
-          className="w-full mt-2 btn-principal"
+          label="Continuar"
+          className="w-full"
+          style={{ height: '1.8rem', padding: '0px', paddingBottom: '0px',
+             fontSize: '16px', fontWeight: '600'}}
         />
 
         {/*Boton Ya tengo Cuenta*/}
         <Button
         type="button"
         label="Ya tengo una cuenta"
+        className="w-full"
+        style={{ height: '1.8rem', padding: '0px', paddingBottom: '0px',
+           fontSize: '16px',  fontWeight: '600'}}
         onClick={() => navigate ('/login')}
         />
-
+        </>
+     
       </form>
 
       </Card>

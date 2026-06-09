@@ -5,7 +5,7 @@ export default function PanelPaciente() {
   const navigate = useNavigate();
 
   const irAgendarCita = () => {
-    navigate("/agendar-cita");
+    navigate("/citas");
   };
 
   const irMedicos = () => {

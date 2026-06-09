@@ -5,10 +5,9 @@ const protegerRuta = require('../middlewares/authMiddleware');
 
 // Rutas para la entidad medicos
 router.post('/', medicoController.createMedico);
+router.get('/', medicoController.getAllMedicos);
 // Guardian
 router.use(protegerRuta);
-router.get('/', medicoController.getAllMedicos);
-
 router.get('/usuario/:id_usuario', medicoController.getMedicoByUsuarioId);
 router.get('/:id', medicoController.getMedicoById);
 router.put('/:id', medicoController.updateMedico);
