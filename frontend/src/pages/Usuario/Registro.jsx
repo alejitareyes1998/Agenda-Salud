@@ -145,8 +145,8 @@ if (password !== confirmarPassword) {
     </div>
 
     {/*Formulario de registro*/}
-      <form onSubmit={handleRegistro} className="flex flex-column gap-3 ">
-        <div className="flex flex-column gap-2">
+      <form onSubmit={handleRegistro} className="flex flex-column gap-1 ">
+        <div className="flex flex-column gap-1">
           <label htmlFor="nombre" className="text-sm font-bold">
             Nombre
           </label>
@@ -161,7 +161,7 @@ if (password !== confirmarPassword) {
         </div>
 
         {/* Campo para escribir el apellido del usuario */}
-        <div className="flex flex-column gap-2">
+        <div className="flex flex-column gap1">
           <label htmlFor="apellido" className="text-sm font-bold">
             Apellido
           </label>
@@ -176,7 +176,7 @@ if (password !== confirmarPassword) {
         </div>
 
         {/* Campo para seleccionar el tipo de documento */}
-        <div className="flex flex-column gap-2">
+        <div className="flex flex-column gap-1">
           <label htmlFor="tipoDocumento" className="text-sm font-bold">
             Tipo de documento
           </label>
@@ -210,7 +210,7 @@ if (password !== confirmarPassword) {
         </div>
 
         {/* Campo para escribir el correo del usuario */}
-        <div className="flex flex-column gap-2">
+        <div className="flex flex-column gap-1">
           <label htmlFor="correo" className="text-sm font-bold">
             Correo
           </label>
@@ -226,7 +226,7 @@ if (password !== confirmarPassword) {
 
         
         {/* Campo para escribir la contraseña del usuario */}
-        <div className="flex flex-column gap-2">
+        <div className="flex flex-column gap-1">
           <label htmlFor="password" className="text-sm font-bold">
             Contraseña
           </label>
@@ -244,7 +244,7 @@ if (password !== confirmarPassword) {
         </div>
 
         {/*Confirmacion de contraseña*/}
-        <div className="flex flex-column gap-2">
+        <div className="flex flex-column gap-1">
           <label htmlFor="confirmarPassword" className="text-sm font-bold">
             Confirmar contraseña
           </label>
@@ -260,7 +260,7 @@ if (password !== confirmarPassword) {
             inputClassName="w-full"
           />
         </div>
-        <div className="flex flex-column gap-2 mt-3">
+        <div className="flex flex-column gap-1  mt-3">
            <label htmlFor="tipoUsuario" className="text-sm font-bold">
              Tipo Usuario
            </label>
@@ -278,7 +278,7 @@ if (password !== confirmarPassword) {
         <Button
           type="submit"
           label="Registrarse"
-          className="w-full mt-2 btn-principal"
+          className="w-full mt-3 btn-principal"
         />
 
         {/*Boton Ya tengo Cuenta*/}
