@@ -10,6 +10,8 @@ import Medicos from './pages/Paciente/Medicos';
 import PerfilPaciente from './pages/Paciente/PerfilPaciente';
 import HistorialCitasPac from './pages/Paciente/HistorialCitasPac';
 
+import PQR from './pages/Paciente/PQR';
+
 import PanelMedico from './pages/Medico/PanelMedico';
 import PerfilMedico from './pages/Medico/PerfilMedico';
 import HistorialCitasMed from './pages/Medico/HistorialCitasMed';
@@ -55,6 +57,8 @@ function App() {
         <Route path='/medicos' element={<Medicos />} />
         <Route path='/perfil' element={<PerfilPaciente />} />
         <Route path='/historial-citas-pac' element={<HistorialCitasPac />} />
+
+<Route path='/pqr' element={<PQR />} />
 
         {/* RUTA: Registro Usuario*/}
         <Route path='/registro' element={<Registro />} />
