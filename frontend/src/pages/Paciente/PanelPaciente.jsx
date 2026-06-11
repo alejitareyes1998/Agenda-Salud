@@ -132,21 +132,6 @@ const irPQR = () => {
           </p>
         </button>
 
-<button
-  type="button"
-  className="pp-nav-card"
-  onClick={irPQR}
->
-  <div className="pp-nav-icon pp-ic-azul">
-    <i className="pi pi-file-edit" />
-  </div>
-
-  <p className="pp-nav-title">PQR</p>
-  <p className="pp-nav-desc">
-    Envía peticiones, quejas, reclamos y sugerencias
-  </p>
-</button>
-
       </section>
     </PanelLayout>
   );

@@ -1,6 +1,22 @@
+import { useState } from "react";
 import PanelLayout from "../../layouts/PanelLayout";
 
 export default function PQR() {
+  const [tipoSolicitud, setTipoSolicitud] = useState("peticion");
+  const [mensaje, setMensaje] = useState("");
+  const [enviado, setEnviado] = useState(false);
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    if (!mensaje.trim()) {
+      alert("Escribe el detalle de tu solicitud para poder enviarla.");
+      return;
+    }
+
+    setEnviado(true);
+  };
+
   return (
     <PanelLayout
       title="PQR"

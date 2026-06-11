@@ -3,6 +3,7 @@ import BotonCerrarSesion from "../components/BotonCerrarSesion";
 import BotonAyuda from "../components/BotonAyuda";
 import BotonAtras from "../components/BotonAtras";
 import apiConfig from "../api/apiConfig";
+import { Link } from "react-router-dom";
 import "./PanelLayout.css";
 
 export default function PanelLayout({
@@ -237,13 +238,13 @@ export default function PanelLayout({
   <div className="footer-bottom">
     <div className="footer-bottom-inner">
       <span className="copy">© 2026 Agenda Salud · Todos los derechos reservados</span>
-      <a href="#" className="pqrsf-btn">
+      <Link to="/pqr" className="pqrsf-btn">
         <svg viewBox="0 0 24 24">
           <path d="M3 18v-6a9 9 0 0118 0v6" />
           <path d="M21 19a2 2 0 01-2 2h-1a2 2 0 01-2-2v-3a2 2 0 012-2h3zM3 19a2 2 0 002 2h1a2 2 0 002-2v-3a2 2 0 00-2-2H3z" />
         </svg>
         Canal PQRSF
-      </a>
+      </Link>
     </div>
   </div>
 </footer>
