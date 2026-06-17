@@ -1,0 +1,75 @@
+.pqr-container {
+  display: flex;
+  justify-content: center;
+  padding: 20px;
+}
+
+.pqr-card {
+  width: 100%;
+  max-width: 900px;
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(8px);
+  border-radius: 20px;
+  padding: 35px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+}
+
+.pqr-card h2 {
+  margin-bottom: 10px;
+  color: #1f2a44;
+}
+
+.pqr-text {
+  color: #64748b;
+  margin-bottom: 25px;
+}
+
+.pqr-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.pqr-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.pqr-group label {
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: #1f2a44;
+}
+
+.pqr-group input,
+.pqr-group select,
+.pqr-group textarea {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #dbe2ea;
+  border-radius: 10px;
+  font-size: 15px;
+  outline: none;
+}
+
+.pqr-group input:focus,
+.pqr-group select:focus,
+.pqr-group textarea:focus {
+  border-color: #2563eb;
+}
+
+.pqr-btn {
+  width: 220px;
+  padding: 12px;
+  border: none;
+  border-radius: 10px;
+  background: #2563eb;
+  color: white;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.pqr-btn:hover {
+  background: #1d4ed8;
+}
