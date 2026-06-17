@@ -82,7 +82,7 @@ const handleValidarCodigo = async (e) => {
             <img
                 src='/imagenes/logo.png'
                 alt='Logo Agenda Salud'
-                style={{ width: '150px' }}
+                style={{ width: '100px' }}
             />
 
             {/* Título principal */}

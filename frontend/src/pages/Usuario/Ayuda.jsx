@@ -34,7 +34,7 @@ return (
         <img
             src="/imagenes/logo.png"
             alt="Logo Agenda Salud"
-            style={{ width: "120px" }}
+            style={{ width: "100px" }}
         />
 
         <h2 className="text-900 font-bold mt-3 mb-0">¿Necesitas Ayuda?</h2>

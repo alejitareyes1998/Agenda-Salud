@@ -7,6 +7,7 @@ import apiConfig from "../../api/apiConfig";
 function Cita() {
   const navigate = useNavigate();
 
+  // 1. ESTADO DEL FORMULARIO (La estructura original)
   const [datos, setDatos] = useState({
     fecha: "",
     hora: "",
@@ -14,9 +15,14 @@ function Cita() {
     id_medico: "",
   });
 
+  // 2. NUEVOS ESTADOS PARA LOS BLOQUES DE HORAS
   const [medicos, setMedicos] = useState([]);
+  const [horasDisponibles, setHorasDisponibles] = useState([]); 
   const [cargando, setCargando] = useState(false);
+  const [buscandoHoras, setBuscandoHoras] = useState(false);
+  const [mensajeHoras, setMensajeHoras] = useState("");
 
+  // 3. CARGAR MÉDICOS AL INICIAR 
   useEffect(() => {
     const cargarMedicos = async () => {
       try {
@@ -40,6 +46,48 @@ function Cita() {
     cargarMedicos();
   }, []);
 
+  // 4. NUEVO EFFECT: Monitorea médico y fecha para traer los bloques de 20 min
+  useEffect(() => {
+    const cargarHorariosDisponibles = async () => {
+      // Si falta alguno de los dos campos, vaciamos las horas
+      if (!datos.id_medico || !datos.fecha) {
+        setHorasDisponibles([]);
+        setMensajeHoras("");
+        return;
+      }
+
+      setBuscandoHoras(true);
+      setMensajeHoras("");
+      setHorasDisponibles([]);
+      // Reseteamos la hora en el estado para obligar a elegir una nueva
+      setDatos((prev) => ({ ...prev, hora: "" })); 
+
+      try {
+        // Petición al nuevo endpoint del backend
+        const respuesta = await apiConfig.get("/cita/disponibilidad", {
+          params: {
+            id_medico: datos.id_medico,
+            fecha: datos.fecha,
+          },
+        });
+
+        setHorasDisponibles(respuesta.data);
+
+        // Si el backend responde vacío [], significa que no trabaja ese día o está lleno
+        if (respuesta.data.length === 0) {
+          setMensajeHoras("El médico no atiende este día o no cuenta con horarios disponibles.");
+        }
+      } catch (error) {
+        console.error("Error al cargar disponibilidad:", error);
+        setMensajeHoras("No se pudieron cargar los horarios para esta fecha.");
+      } finally {
+        setBuscandoHoras(false);
+      }
+    };
+
+    cargarHorariosDisponibles();
+  }, [datos.id_medico, datos.fecha]); // Se activa automáticamente al cambiar médico o fecha
+
   const handleChange = (e) => {
     setDatos({
       ...datos,
@@ -47,6 +95,7 @@ function Cita() {
     });
   };
 
+  // 5. GUARDAR LA CITA 
   const handleAgendar = async (e) => {
     e.preventDefault();
 
@@ -109,13 +158,31 @@ function Cita() {
       <section className="pp-greeting">
         <div>
           <h1>Agendar cita</h1>
-          <p>Selecciona la fecha, hora, médico y motivo de tu consulta.</p>
+          <p>Selecciona médico y fecha para ver tus opciones de horario.</p>
         </div>
       </section>
 
       <section className="cita-panel-wrapper">
         <div className="tarjeta-cita">
           <form onSubmit={handleAgendar}>
+            
+            {/* Selector de Médico */}
+            <select
+              name="id_medico"
+              className="input-cita"
+              value={datos.id_medico}
+              onChange={handleChange}
+              required
+            >
+              <option value="">Seleccione un médico</option>
+              {medicos.map((medico) => (
+                <option key={medico.id_medico} value={medico.id_medico}>
+                  {medico.nombre} ({medico.especialidad})
+                </option>
+              ))}
+            </select>
+
+            {/* Selector de Fecha */}
             <input
               type="date"
               name="fecha"
@@ -125,31 +192,43 @@ function Cita() {
               required
             />
 
-            <input
-              type="time"
-              name="hora"
-              className="input-cita"
-              value={datos.hora}
-              onChange={handleChange}
-              required
-            />
+            {/* NUEVA SECCIÓN: Selector de turnos dinámico */}
+            <div style={{ margin: "5px 0 20px 0", textAlign: "left" }}>
+              <label style={{ fontSize: "14px", fontWeight: "600", display: "block", marginBottom: "8px", color: "#444" }}>
+                Horarios disponibles cada 20 min:
+              </label>
 
-            <select
-              name="id_medico"
-              className="input-cita"
-              value={datos.id_medico}
-              onChange={handleChange}
-              required
-            >
-              <option value="">Seleccione un médico</option>
+              {buscandoHoras && <p style={{ fontSize: "14px", color: "#666" }}>Consultando agenda libre...</p>}
+              {mensajeHoras && <p style={{ fontSize: "14px", color: "#dc3545", fontWeight: "bold" }}>{mensajeHoras}</p>}
 
-              {medicos.map((medico) => (
-                <option key={medico.id_medico} value={medico.id_medico}>
-                  {medico.nombre} ({medico.especialidad})
-                </option>
-              ))}
-            </select>
+              {/* Contenedor en cuadrícula para las horas */}
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "8px" }}>
+                {horasDisponibles.map((h) => (
+                  <button
+                    type="button"
+                    key={h.hora}
+                    // Al hacer clic, guarda la hora seleccionada en el estado "datos.hora"
+                    onClick={() => setDatos((prev) => ({ ...prev, hora: h.hora }))}
+                    style={{
+                      padding: "10px",
+                      fontSize: "14px",
+                      // Si esta es la hora seleccionada, se pinta azul, si no, blanca
+                      backgroundColor: datos.hora === h.hora ? "#007bff" : "#ffffff",
+                      color: datos.hora === h.hora ? "#ffffff" : "#333333",
+                      border: "1px solid #ccc",
+                      borderRadius: "6px",
+                      cursor: "pointer",
+                      fontWeight: datos.hora === h.hora ? "bold" : "normal",
+                      transition: "all 0.2s ease"
+                    }}
+                  >
+                    {h.hora.substring(0, 5)} {/* Corta '08:00:00' para mostrar solo '08:00' */}
+                  </button>
+                ))}
+              </div>
+            </div>
 
+            {/* Input de Motivo */}
             <input
               type="text"
               name="motivo"
@@ -160,7 +239,12 @@ function Cita() {
               required
             />
 
-            <button type="submit" className="boton-cita" disabled={cargando}>
+            {/* Botón de Envío: Deshabilitado si no hay hora elegida en los botones */}
+            <button 
+              type="submit" 
+              className="boton-cita" 
+              disabled={cargando || !datos.hora}
+            >
               {cargando ? "Agendando..." : "Agendar cita"}
             </button>
 
